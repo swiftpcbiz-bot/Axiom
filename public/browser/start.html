@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Tab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Jost:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+    <script src="./js/themeManager.js"></script>
+    <style>
+                body {
+            margin: 0;
+            font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #1f1f1f;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-family: 'Jost', sans-serif;
+            font-weight: 240;
+            font-style: normal;
+            font-size: 70px;
+            margin: 0;
+            margin-bottom: 15px;
+        }
+
+        #twentyfivemakeitthrirty {
+            position: absolute;
+            top: 45%;
+            gap: 15px;
+            left: 50%;
+            width: 100%;
+            transform: translate(-50%, -60%);
+        }
+
+        #url-input {
+            padding: 8px;
+            color: white;
+            border: none;
+            border-radius: 15px;
+            background-color: #363636;
+            outline: none;
+            width: 50%;
+            padding: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .reccomendation {
+            padding: 8px;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            background-color: #363636;
+            outline: none;
+            width: 130px;
+            height: 40px;
+            margin-top: 15px;
+            transition: all 0.2s ease;
+        }
+
+
+
+
+
+        .stars-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            opacity: 0.8;
+            animation: orbit linear infinite;
+        }
+
+        @keyframes orbit {
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        #pipi {
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        #pipi img {
+            position: absolute;
+            bottom: 0px;
+            left: 0px;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="stars-container" id="stars-container"></div>
+
+    <center id="twentyfivemakeitthrirty">
+    <h1>Axiom</h1>
+    <input id="url-input" placeholder="What are you looking for today?"/>
+    <br>
+    <button class="reccomendation" onclick="redirect(true)">I'm feeling lucky</button>
+    <button class="reccomendation" onclick="redirect(false)">I AM TISM</button>
+
+    </center>
+
+    <div id="pipi">
+        
+    </div>
+
+    <script>
+
+        // check for pipipi theme
+        if (localStorage.getItem('axiomTheme') === 'pipipipi') {
+
+            const pipi = document.getElementById('pipi');
+            const pipi_img = document.createElement('img');
+            pipi_img.src = "./assets/pippa.gif";
+            pipi.appendChild(pipi_img);
+        }
+
+
+        const lucky = [
+            "monkeys",
+            "pandas",
+            "cats",
+            "dogs",
+            "cats",
+            "montery bay aquarium", // shoutout my goat rosa the otter, rip
+            "otters",
+            "fwog",
+            "AJR",
+            "Kanye West",
+            "composite"
+        ]
+
+        const stupid = [
+            "pipkin pippa",
+            "marimari_en",
+            "good kid twisted fantasy",
+            "yedits",
+            "why to buy a fumofumo",
+            "touhou",
+            "sing about me im dying of thirst",
+            "murder drones" // goated show btw
+        ]
+
+        function redirect(smart){
+            if (smart){
+                window.location = '../prxy.html?url=' + btoa(lucky[Math.floor(Math.random() * lucky.length)]);
+            } else {
+                window.location = '../prxy.html?url=' + btoa(stupid[Math.floor(Math.random() * stupid.length)]);
+            }
+        }
+
+        document.getElementById("url-input").addEventListener("keydown", async function (key) {
+            if (key.code == "Enter") {
+                window.location = '../prxy.html?url=' + btoa(document.getElementById("url-input").value);
+            }
+        })
+
+        </script>
+
+</body>
+</html>

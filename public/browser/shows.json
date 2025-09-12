@@ -1,0 +1,38 @@
+[
+  {
+    "name": "1Anime",
+    "link": "https://1anime.app/",
+    "image": "/assets/media/icons/1anime.svg",
+    "categories": ["all"]
+  },
+    {
+    "name": "ESPN",
+    "link": "https://www.espn.com/",
+    "image": "/assets/media/icons/espn.webp",
+    "categories": ["all"]
+  },
+  {
+    "name": "Disney+",
+    "link": "https://www.disneyplus.com/",
+    "image": "/assets/media/icons/disney.jpg",
+    "categories": ["all"]
+  },
+  {
+    "name": "Netflix",
+    "link": "https://www.netflix.com/",
+    "image": "/assets/media/icons/netflix.png",
+    "categories": ["all"]
+  },
+  {
+    "name": "YouTube TV",
+    "link": "https://www.youtube.com/tv",
+    "image": "/assets/media/icons/youtube.png",
+    "categories": ["all"]
+  },
+  {
+    "name": "HiAnime",
+    "link": "https://hianime.bz/",
+    "image": "/assets/media/icons/hi.png",
+    "categories": ["all"]
+  }
+]

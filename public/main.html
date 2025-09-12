@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Axiom</title>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/ui-lightness/jquery-ui.css">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
+    <script src="./browser/js/themeManager.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        #desktop {
+            width: 100%;
+            height: calc(100% - 60px);
+            position: fixed;
+            top: 24px;
+        }
+
+        #toolbar {
+            height: 60px;
+            width: fit-content;
+            pad: 24px;
+            /* semi-transparent aero shit */
+            backdrop-filter: blur(20px);
+            background:  rgba(246,246,246,0.765);
+            gap: 8px;
+            margin-top: calc(100vh - 70px);
+            border-radius: 8px;
+            z-index: -15;
+            backdrop-filter: blur(15px);
+        }
+
+        #toolbar.maximized {
+            width: 100% !important;
+            position: fixed !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            z-index: 10000 !important;
+            border-radius: 0 !important;
+            margin-top: 0 !important;
+        }
+
+        #toolbar button {
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            background-color: transparent;
+            margin-left: 5px;
+            height: 60px;
+            width: 50px;
+        }
+
+        #toolbar button:hover {
+            transform: scale(1.1);
+        }
+
+        #toolbar button img {
+            width: 60%;
+            height: 38%;
+        }
+
+        #time {
+            position: absolute;
+            right: 15px;
+            bottom: 20px;
+        }
+
+        .window {
+            position: absolute;
+            padding-top: 5px;
+            backdrop-filter: blur(15px);
+            background:  rgba(246,246,246,0.765);
+            border-radius: 5px;
+            width: 300px;
+            height: 300px;
+            overflow: hidden;
+            opacity: 1;
+            transition: width 0.3s ease, height 0.3s ease, top 0.3s ease, left 0.3s ease, opacity 0.3s ease;
+        }
+
+        .window.closing {
+            opacity: 0;
+        }
+
+        .title-bar {
+            margin-bottom: 5px;
+            user-select: none;
+            margin-left: 5px;
+        }
+
+        .title-bar span {
+            filter: invert(1);
+        }
+
+        .window-controls {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            display: flex;
+            gap: 5px;
+        }
+
+        .close {
+            width: 10px;
+            height: 10px;
+            margin-top: 5px;
+            background-color: #f05c5c;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .minimize {
+            width: 10px;
+            height: 10px;
+            margin-top: 5px;
+            background-color: #f0bc5c;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .maximize {
+            width: 10px;
+            height: 10px;
+            margin-top: 5px;
+            background-color: #5cf05c;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .content {
+            width: 100%;
+            height: 100%;
+                        overflow: hidden;
+        }
+
+        .content iframe {
+            width: 100%;
+            height: calc(100% - 30px);
+            overflow: hidden;
+        }
+
+        #top-bar {
+            width: 100%;
+            height: 24px;
+            position: fixed;
+            top: 0px;
+            z-index: 9999;
+            background: linear-gradient(180deg, rgba(246,246,246,0.95) 0%, rgba(236,236,236,0.95) 100%);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0,0,0,0.1);
+            color: #333;
+            font-size: 13px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 16px;
+            box-sizing: border-box;
+        }
+
+        #top-bar-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        #top-bar-center {
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        #top-bar-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .menu-item {
+            padding: 2px 8px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .menu-item:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        #status-icons {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-icon {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            padding: 2px 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        .status-icon:hover {
+            background-color: rgba(0,0,0,0.1);
+        }
+
+        .status-icon .material-symbols-outlined {
+            font-size: 16px;
+        }
+
+        #time-display {
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        #particles-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+    <div id="top-bar">
+        <div id="top-bar-left">
+    
+            <div class="menu-item" onclick="openApp('Axiom', '/browser/browser.html')">Axiom</div>
+            <div class="menu-item" onclick="window.location='/browser/browser.html'">Browser-Only</div>
+            <div class="menu-item" onclick="openApp('Games', '/browser/games.html')">Games</div>
+            <div class="menu-item" onclick="openApp('AI Chat', '/browser/features/ai.html')">AI</div>
+            <div class="menu-item" onclick="openApp('Settings', '/browser/settings.html')">Settings</div>
+            <div class="menu-item" onclick="openApp('Oxygen VMs (Powered by V86)', '/features/vm.html')">Virtual Machine</div>
+        </div>
+        
+        <div id="top-bar-center">
+        </div>
+        
+        <div id="top-bar-right">
+            <div id="status-icons">
+                <div class="status-icon">
+                    <span class="material-symbols-outlined">wifi</span>
+                </div>
+                <div class="status-icon" id="battery">
+                    <span id="battery-text">100%</span>
+                    <span class="material-symbols-outlined">battery_android_frame_question</span>
+                </div>
+                <div id="time-display">12:00 PM</div>
+            </div>
+        </div>
+    </div>
+    <div id="desktop">
+        <canvas id="particles-canvas"></canvas>
+    </div>
+            <center>
+    <div id="toolbar">
+        <button onclick="openApp('Axiom', '/browser/browser.html')">
+            <img src="os-assets/logo.png">
+        </button>
+        <button onclick="openApp('Visual Studio Code', '/prxy.html?url='+btoa('https://vscode.dev/'))">
+            <img src="os-assets/vscode.png">
+        </button>
+        <button onclick="openApp('Discord', '/prxy.html?url='+btoa('https://discord.com/login'))">
+            <img src="os-assets/discord.jpg">
+        </button>
+        <button onclick="openApp('YouTube', '/prxy.html?url='+btoa('https://youtube.com/'))">
+            <img src="os-assets/youtube.webp">
+        </button>
+        <button onclick="openApp('Twitch', '/prxy.html?url='+btoa('https://twitch.tv/'))">
+            <img src="os-assets/twitch.png">
+        </button>
+        <button onclick="openApp('AI Chat', '/browser/features/ai.html')">
+            <img src="os-assets/openai.png">
+        </button>
+        <button onclick="openApp('Terminal', '/features/terminal.html')">
+            <img src="os-assets/terminal.png">
+        </button>
+        <button onclick="openApp('Oxygen VMs (Powered by V86)', '/features/vm.html')">
+            <img src="os-assets/vmbox.jpg">
+        </button>
+
+     
+    </div>
+            </center>
+
+    <script>
+
+        let stack = [] // window stack
+        let highestZIndex = 1;
+        let maximizedWindows = new Set();
+
+        // Particle System Variables
+        let canvas, ctx;
+        let particles = [];
+        const particleCount = 50;
+        let animationId;
+
+        // Particle class
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+                this.opacity = Math.random() * 0.5 + 0.1;
+                this.color = this.getThemeColor();
+            }
+
+            getThemeColor() {
+                const currentTheme = localStorage.getItem('axiomTheme') || 'dark';
+                const themeColors = {
+                    dark: '#6b7280',
+                    midnight: '#4299e1',
+                    forest: '#48cc6c',
+                    sunset: '#ff8c42',
+                    neon: '#00d4ff',
+                    pipipipi: '#d16ba5'
+                };
+                return themeColors[currentTheme] || '#6b7280';
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+
+                // Wrap around edges
+                if (this.x < 0) this.x = canvas.width;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.y < 0) this.y = canvas.height;
+                if (this.y > canvas.height) this.y = 0;
+
+                // Update color based on current theme
+                this.color = this.getThemeColor();
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.globalAlpha = this.opacity;
+                ctx.fill();
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        function initParticles() {
+            canvas = document.getElementById('particles-canvas');
+            ctx = canvas.getContext('2d');
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight - 60; // Account for top bar and toolbar
+            }
+
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            // Create particles
+            particles = [];
+            for (let i = 0; i < particleCount; i++) {
+                particles.push(new Particle());
+            }
+
+            animate();
+        }
+
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            particles.forEach(particle => {
+                particle.update();
+                particle.draw();
+            });
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function updateToolbar() {
+            const toolbar = document.getElementById('toolbar');
+            if (maximizedWindows.size > 0) {
+                toolbar.classList.add('maximized');
+            } else {
+                toolbar.classList.remove('maximized');
+            }
+        }
+
+        setInterval(async () => {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString([], {
+                weekday: 'short',
+                month: 'short', 
+                day: 'numeric',
+                hour: 'numeric',
+                minute: '2-digit'
+            });
+            document.getElementById("time-display").innerHTML = timeString;
+            
+            try {
+                const battery = await navigator.getBattery();
+                const batteryPercentage = Math.round(battery.level * 100);
+                const isCharging = battery.charging;
+                const isLow = battery.level < 0.2;
+                
+                const batteryElement = document.getElementById("battery");
+                const batteryText = document.getElementById("battery-text");
+                const batteryIcon = batteryElement.querySelector('.material-symbols-outlined');
+                
+                batteryText.textContent = batteryPercentage + "%";
+                
+                // Remove any previous battery status classes
+                batteryElement.classList.remove('low', 'charging', 'medium');
+                
+                if (isLow && !isCharging) {
+                    batteryElement.classList.add('low');
+                    batteryIcon.textContent = "battery_android_frame_1";
+                } else if (isCharging) {
+                    batteryElement.classList.add('charging');
+                    batteryIcon.textContent = "battery_android_frame_bolt";
+                } else if (batteryPercentage < 25) {
+                    batteryElement.classList.add('low');
+                    batteryIcon.textContent = "battery_android_frame_1";
+                } else if (batteryPercentage < 50) {
+                    batteryElement.classList.add('medium');
+                    batteryIcon.textContent = "battery_android_frame_4";
+                } else if (batteryPercentage < 75) {
+                    batteryElement.classList.add('medium');
+                    batteryIcon.textContent = "battery_android_frame_5";
+                } else if (batteryPercentage < 90) {
+                    batteryElement.classList.add('medium');
+                    batteryIcon.textContent = "battery_android_frame_6";
+                } else {
+                    batteryElement.classList.remove('low', 'charging', 'medium');
+                    batteryIcon.textContent = "battery_android_frame_full";
+                }
+            } catch (e) {
+                document.getElementById("battery-text").textContent = "100%";
+            }
+        }, 1000);
+
+        function arrange(id){
+            const index = stack.indexOf(id);
+            stack.splice(index, 1);
+            document.getElementById(id).style.zIndex = highestZIndex++;
+            stack.push(id);
+        }
+
+        function closeWindow(id){
+            const windowElement = document.getElementById(id);
+            windowElement.classList.add('closing');
+            setTimeout(() => {
+                const index = stack.indexOf(id);
+                stack.splice(index, 1);
+                windowElement.remove();
+                maximizedWindows.delete(id);
+                updateToolbar();
+            }, 300);
+        }
+
+        function minimize(id){
+            let window = document.getElementById(id);
+            // normal dimensions are 300px x 300px
+            window.style.width = "300px";
+            window.style.height = "300px";
+            maximizedWindows.delete(id);
+            updateToolbar();
+            $(`#${id}`).draggable("destroy").resizable("destroy");
+            $(`#${id}`).draggable().resizable({ containment: document.getElementById("desktop") });
+        }
+
+        function maximize(id){
+            let window = document.getElementById(id);
+            window.style.width = "100%";
+            window.style.height = "100%";
+            window.style.top = "0px";
+            window.style.left = "0px";
+            maximizedWindows.add(id);
+            updateToolbar();
+            $(`#${id}`).draggable("destroy").resizable("destroy");
+            $(`#${id}`).draggable().resizable({ containment: document.getElementById("desktop") });
+        }
+
+        function openApp(name, url){
+
+            id = Math.floor(Math.random() * 1000000000);
+            const windowHTML = `
+            <div class="window" id="${id}" onclick="arrange('${id}')">
+                <div class="title-bar">
+                    <span>
+                    ${name}
+                    </span>
+                    <div class="window-controls">                        
+                        <div class="maximize" onclick="maximize('${id}')"></div>
+                        <div class="minimize" onclick="minimize('${id}')"></div>
+                                                <div class="close" onclick="closeWindow('${id}')"></div>
+                    </div>
+                </div>
+                <div class="content">
+                    <iframe onclick="arrange('${id}')" src="${url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+            `
+            document.getElementById("desktop").insertAdjacentHTML("beforeend", windowHTML);
+            document.getElementById(id).style.zIndex = highestZIndex++;
+
+            $(`#${id}`).draggable().resizable(
+                {
+                    containment: document.getElementById("desktop")
+                }
+            );
+
+            stack.push(id);
+        }
+
+        // Initialize particles when page loads
+        window.addEventListener('load', initParticles);
+
+    </script>
+</body>
+</html>

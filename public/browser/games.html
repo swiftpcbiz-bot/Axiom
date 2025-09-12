@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Tab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Jersey+10&family=Jost:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+        rel="stylesheet">
+    <script src="./js/themeManager.js"></script>
+    <style>
+        body {
+            margin: 0;
+            font-family: Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #1f1f1f;
+            color: #ffffff;
+        }
+
+        #cards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            padding: 20px;
+            justify-content: center;
+        }
+
+        .card {
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            width: 170px;
+            height: 170px;
+            user-select: none;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            transition: all 0.2s ease;
+        }
+
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .card img {
+            width: 120px;
+            height: 120px;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        .card h2 {
+            margin-top: 10px;
+            font-size: 26px;
+            font-weight: 600;
+        }
+
+        #controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        #search-input {
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            background-color: #2a2a2a;
+            color: #ffffff;
+            font-size: 16px;
+            width: 300px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        #category-select {
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            background-color: #2a2a2a;
+            color: #ffffff;
+            font-size: 16px;
+            margin-left: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        #selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            width: fit-content;
+            background-color: #2a2a2a;
+            padding: 8px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        #selector button {
+            padding: 8px;
+            border: none;
+            border-radius: 4px;
+            background-color: #2a2a2a;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        #selector button.active {
+            background-color: #505050;
+        }
+
+        
+    </style>
+</head>
+
+<body>
+    <center>
+    <div id="controls">
+        <input type="text" id="search-input" placeholder="Search..." /> 
+        <!-- el dropdown -->
+        <select id="category-select">
+            <option value="all">All</option>
+            <option value="game">Game</option>
+            <option value="2P">2 Player</option>
+            <option value="flash">Flash</option>
+        </select>
+
+    </div>
+        
+    <div id="selector">
+            <button onclick="render('games')" id="games">
+                Games
+            </button>
+            <button onclick="render('apps')" id="apps">
+                Apps
+            </button>
+            <button onclick="render('shows')" id="shows">
+                Shows
+            </button>
+        </div>
+
+    <div id="cards"></div>
+    <script>
+        // get "style" from url params
+        const urlParams = new URLSearchParams(window.location.search);
+        const style = urlParams.get("style");
+        if (style == "apps") {
+            link = "./apps.json";
+            document.getElementById("apps").classList.add("active");
+        }
+        else if (style == "shows"){
+            link = "./shows.json";
+            document.getElementById("shows").classList.add("active");
+        }
+        else {
+            link = "./games.json";
+            document.getElementById("games").classList.add("active");
+        }
+        
+        // cause one day you'll respect the good kid maad city
+        fetch(link)
+            .then((response) => response.json())
+            .then((data) => {
+                data.forEach(game => {
+                    /* format
+                      {
+        "name": "Fancade",
+        "link": "https://play.fancade.com",
+        "image": "/assets/media/icons/fancade.jpg",
+        "categories": ["all"]
+      },
+      */
+                    const card = document.createElement("div");
+                    card.className = "card";
+                    card.style.cursor = "pointer";
+                    
+                    const image = document.createElement("img");
+                    image.src = "./" + game.image;
+                    image.alt = game.name;
+                    
+                    const name = document.createElement("h2");
+                    name.textContent = game.name;
+                    
+                    card.onclick = function() {
+                        window.location = ('../prxy.html?url=' + btoa(game.link));
+                    };
+                    
+                    card.appendChild(image);
+                    card.appendChild(name);
+                    card.categories = game.categories.join(",");
+                    document.getElementById("cards").appendChild(card);
+                });
+            })
+            .catch((error) => {
+                console.error("Error loading games:", error);
+                document.getElementById("cards").innerHTML = "<p>Error loading games. Please try again later.</p>";
+            });
+
+        function filterCards() {
+            const searchTerm = document.getElementById("search-input").value.toLowerCase();
+            const selectedCategory = document.getElementById("category-select").value;
+            const cards = document.querySelectorAll(".card");
+            
+            cards.forEach(card => {
+                const name = card.querySelector("h2").textContent.toLowerCase();
+                const categories = card.categories ? card.categories.split(",") : ["all"];
+                
+                const matchesSearch = name.includes(searchTerm);
+                const matchesCategory = selectedCategory === "all" || categories.includes(selectedCategory);
+                
+                card.style.display = (matchesSearch && matchesCategory) ? "block" : "none";
+            });
+        }
+
+        document.getElementById("search-input").addEventListener("input", filterCards);
+        document.getElementById("category-select").addEventListener("change", filterCards);
+
+        function render(page) {
+            window.location = "./games.html?style=" + page;
+        }
+    </script>
+    </center>
+</body>
+
+</html>

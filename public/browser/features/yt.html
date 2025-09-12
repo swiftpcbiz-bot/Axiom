@@ -13,8 +13,8 @@
             margin: 0;
             padding: 20px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background: #121212;
-            color: #ffffff;
+            background: var(--theme-ytBackground);
+            color: var(--theme-textPrimary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -32,24 +32,24 @@
             padding: 15px 20px;
             border: 2px solid transparent;
             border-radius: 25px;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--theme-ytSurface);
             backdrop-filter: blur(10px);
-            color: #ffffff;
+            color: var(--theme-textPrimary);
             font-size: 16px;
             outline: none;
             margin: 0;
             transition: all 0.3s ease;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px var(--theme-shadow);
         }
 
         #search::placeholder {
-            color: rgba(255, 255, 255, 0.7);
+            color: var(--theme-textSecondary);
         }
 
         #search:focus {
-            background: rgba(255, 255, 255, 0.15);
-            border-color: rgba(255, 255, 255, 0.3);
-            box-shadow: 0 6px 25px rgba(0, 0, 0, 0.3);
+            background: var(--theme-ytHover);
+            border-color: var(--theme-accent);
+            box-shadow: 0 6px 25px var(--theme-shadow);
         }
 
         #player {
@@ -76,7 +76,7 @@
             max-width: 800px;
             padding: 0;
             scrollbar-width: thin;
-            scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+            scrollbar-color: var(--theme-ytSurface) transparent;
         }
 
         #results::-webkit-scrollbar {
@@ -88,12 +88,12 @@
         }
 
         #results::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.3);
+            background: var(--theme-ytSurface);
             border-radius: 3px;
         }
 
         #results::-webkit-scrollbar-thumb:hover {
-            background: rgba(255, 255, 255, 0.5);
+            background: var(--theme-ytHover);
         }
 
         .video-item {
@@ -101,17 +101,17 @@
             margin-bottom: 15px;
             padding: 12px 15px;
             border-radius: 12px;
-            background: rgba(255, 255, 255, 0.05);
+            background: var(--theme-ytSurface);
             backdrop-filter: blur(10px);
             cursor: pointer;
             transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid var(--theme-overlay);
         }
 
         .video-item:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--theme-ytHover);
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 8px 25px var(--theme-shadow);
         }
 
         .video-thumbnail {
@@ -137,7 +137,7 @@
             font-weight: 600;
             margin-bottom: 6px;
             line-height: 1.4;
-            color: #ffffff;
+            color: var(--theme-textPrimary);
             display: -webkit-box;
             -webkit-box-orient: vertical;
             overflow: hidden;
@@ -145,16 +145,16 @@
 
         .video-channel {
             font-size: 13px;
-            color: #a0aec0;
+            color: var(--theme-textTertiary);
             margin-bottom: 4px;
             font-weight: 500;
         }
 
         .video-duration {
             font-size: 12px;
-            color: #718096;
+            color: var(--theme-textMuted);
             font-weight: 500;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--theme-ytSurface);
             padding: 2px 8px;
             border-radius: 4px;
             display: inline-block;

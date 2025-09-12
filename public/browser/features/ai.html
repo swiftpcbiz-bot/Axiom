@@ -15,8 +15,8 @@
             margin: 0;
             padding: 8px;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background-color: #272727;
-            color: #ffffff;
+            background-color: var(--theme-tertiary);
+            color: var(--theme-textPrimary);
             height: calc(100vh - 16px);
             display: flex;
             flex-direction: column;
@@ -33,8 +33,8 @@
         }
 
         #chat-message-user {
-            background-color: #ca7af8;
-            color: white;
+            background-color: var(--theme-userMessage);
+            color: var(--theme-textPrimary);
             border-radius: 12px;
             padding: 8px 12px;
             max-width: 90%;
@@ -46,8 +46,8 @@
         }
 
         #chat-message-ai {
-            background-color: #2c2c2e;
-            color: #d8d8d8;
+            background-color: var(--theme-aiMessage);
+            color: var(--theme-textSecondary);
             padding: 8px 12px;
             border-radius: 12px;
             max-width: 90%;
@@ -72,14 +72,71 @@
             left: 8px;
             right: 8px;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #content-toggle {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: var(--theme-textSecondary);
+            cursor: pointer;
+            user-select: none;
+            padding: 4px 8px;
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+
+        #content-toggle:hover {
+            background-color: var(--theme-overlay);
+        }
+
+        #content-toggle input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+            width: 36px;
+            height: 20px;
+            background-color: var(--theme-surfaceLight);
+            border-radius: 20px;
+            position: relative;
+            cursor: pointer;
+            outline: none;
+            transition: background-color 0.2s ease;
+        }
+
+        #content-toggle input[type="checkbox"]:checked {
+            background-color: var(--theme-accent);
+        }
+
+        #content-toggle input[type="checkbox"]:before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            background-color: var(--theme-textPrimary);
+            border-radius: 50%;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s ease;
+        }
+
+        #content-toggle input[type="checkbox"]:checked:before {
+            transform: translateX(16px);
+        }
+
+        #content-toggle label {
+            cursor: pointer;
+            font-weight: 500;
         }
 
         #chat-controls input {
             width: 300px;
             padding: 10px;
-            background-color: #494545;
-            color: whitesmoke;
+            background-color: var(--theme-inputBackground);
+            color: var(--theme-textPrimary);
             border: none;
             border-radius: 16px;
             outline: none;
@@ -87,7 +144,7 @@
         }
 
         #chat-controls input::placeholder {
-            color: #999;
+            color: var(--theme-textMuted);
         }
 
         #chat-container::-webkit-scrollbar {
@@ -99,12 +156,12 @@
         }
 
         #chat-container::-webkit-scrollbar-thumb {
-            background: #555;
+            background: var(--theme-textMuted);
             border-radius: 2px;
         }
 
         #chat-container::-webkit-scrollbar-thumb:hover {
-            background: #777;
+            background: var(--theme-textSecondary);
         }
     </style>
 </head>
@@ -119,6 +176,10 @@
     </div>
 
     <div id="chat-controls">
+        <div id="content-toggle">
+            <input type="checkbox" id="include-content" checked />
+            <label for="include-content">Include page content</label>
+        </div>
         <center>
             <input type="text" id="chat-input" placeholder="Type your message here" />
         </center>
@@ -128,12 +189,7 @@
     <script>
         const api_key = "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" // no, this isn't my api key, so don't call me a dumbass for putting it here
         const endpoint = "../../openai/v1/chat/completions"
-        let chat_history = [
-            {
-                "role": "system",
-                "content": "You are Axiom AI, a assistant on the Axiom proxy."
-            }
-        ]
+        let chat_history = []
 
         function send(message, role) {
             const div = document.createElement("div")
@@ -218,29 +274,32 @@
         document.getElementById("chat-input").addEventListener("keydown", async function (key) {
             if (key.code == "Enter") {
                 const userMessage = document.getElementById("chat-input").value;
+                const includeContent = document.getElementById("include-content").checked;
 
-                x = localStorage.getItem("content")
-                if (x == null){
-                    x = ""
+                let contentToInclude = "";
+                if (includeContent) {
+                    let x = localStorage.getItem("content");
+                    if (x != null && x.trim() !== "") {
+                        // truncate the content to 1000 characters
+                        x = x.substring(0, 1000);
+                        contentToInclude = "\nUtilize this web data to solve your problem if relevant: \n" + x;
+                    }
                 }
-                else {
-                    // truncate the content to 1000 characters
-                    x = x.substring(0, 1000);
-                    x = "\nUtilize this web data to solve your problem if relevant: \n" + x
-                }
-                temp_chat_history = chat_history
+
+                const fullMessage = userMessage + contentToInclude;
+                const temp_chat_history = [...chat_history];
 
                 temp_chat_history.push({
                     "role": "user",
-                    "content": userMessage + x 
+                    "content": fullMessage
                 });
 
                 chat_history.push({
                     "role": "user",
-                    "content": userMessage // to prevent context issues
+                    "content": fullMessage // Store full message for context
                 });
 
-                send(userMessage, "user");
+                send(includeContent && contentToInclude ? userMessage + " (with page content)" : userMessage, "user");
 
                 document.getElementById("chat-input").value = "";
 

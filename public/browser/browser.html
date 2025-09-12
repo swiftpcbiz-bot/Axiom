@@ -14,8 +14,8 @@
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background-color: #1b1b1b;
-            color: #ffffff;
+            background-color: var(--theme-primary);
+            color: var(--theme-textPrimary);
             overflow: hidden;
         }
 
@@ -48,7 +48,7 @@
             align-items: center;
             justify-content: space-between;
             font-size: 12px;
-            color: #ffffff;
+            color: var(--theme-textPrimary);
             cursor: pointer;
             overflow: hidden;
             position: relative;
@@ -83,13 +83,13 @@
 
         .tab:hover,
         #add-tab:hover {
-            background-color: #3d3d3d;
+            background-color: var(--theme-hover);
             transform: translateY(-1px);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 2px 8px var(--theme-shadow);
         }
 
         .tab.active {
-            background-color: #575757;
+            background-color: var(--theme-active);
         }
 
         .tab-title {
@@ -102,7 +102,7 @@
 
         #add-tab {
             border-radius: 60%;
-            background-color: #4b4b4b;
+            background-color: var(--theme-surfaceLight);
             min-width: 25px;
             max-width: 50px;
             user-select: none;
@@ -112,7 +112,7 @@
         }
 
         .exit {
-            color: #d4d4d4;
+            color: var(--theme-textSecondary);
             font-size: 14px;
             cursor: pointer;
             transition: all 0.2s ease;
@@ -126,8 +126,8 @@
         }
 
         .exit:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            color: #ff6b6b;
+            background-color: var(--theme-overlay);
+            color: var(--theme-error);
             transform: scale(1.1);
         }
 
@@ -147,12 +147,12 @@
 
         #url-input {
             padding: 8px;
-            color: white;
+            color: var(--theme-textPrimary);
             border: none;
             border-top-left-radius: 15px;
             border-bottom-left-radius: 15px;
             width: 30px;
-            background-color: #363636;
+            background-color: var(--theme-surface);
             padding-left: 8px;
             outline: none;
             width: 80%;
@@ -164,7 +164,7 @@
         #url-bar button {
             border: none;
             background-color: transparent;
-            color: white;
+            color: var(--theme-textPrimary);
             cursor: pointer;
             height: 30px;
             width: 30px;
@@ -176,7 +176,7 @@
         }
 
         #url-bar button:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: var(--theme-overlay);
             transform: scale(1.1);
         }
 
@@ -189,7 +189,7 @@
         }
 
         .input-expansion {
-            background-color: #363636;
+            background-color: var(--theme-surface);
             border-top-right-radius: 15px;
             border-bottom-right-radius: 15px;
             height: 30px;
@@ -206,7 +206,7 @@
         }
 
         #separator {
-            background-color: #4b4b4b;
+            background-color: var(--theme-surfaceLight);
             height: 60%;
             width: 1px;
             position: relative;
@@ -233,7 +233,7 @@
             border: none;
             background-color: transparent;
             border-radius: 5px;
-            color: white;
+            color: var(--theme-textPrimary);
             cursor: pointer;
             height: 40px;
             margin-top: 10px;
@@ -245,9 +245,9 @@
         }
 
         #sidebar button:hover {
-            background-color: #4d4d4d;
+            background-color: var(--theme-surfaceDark);
             transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2px 8px var(--theme-shadow);
         }
 
         #sidebar button:active {
@@ -305,7 +305,7 @@
             border-radius: 15px;
             height: 100%;
             width: 100%;
-            background-color: #ffffff;
+            background-color: var(--theme-textPrimary);
         }
 
         .far-side-buttons {
@@ -315,7 +315,7 @@
         .extensions {
             padding-left: 5px;
             padding-right: 5px;
-            background-color: #575757;
+            background-color: var(--theme-active);
             border-radius: 68px;
             margin-right: 5px;
         }
@@ -324,11 +324,11 @@
             position: absolute;
             padding-top: 5px;
             backdrop-filter: blur(15px);
-            background:  rgba(246,246,246,0.765);
-            border-radius: 5px;        
+            background:  var(--theme-windowBackground);
+            border-radius: 5px;
             width: 300px;
 
-            height: 300px;    
+            height: 300px;
                         overflow: hidden;
         }
 
@@ -448,25 +448,7 @@
         let dragStartX = 0;
         let dragStartIndex = 0;
 
-        try {
-            const savedTabs = localStorage.getItem("tabs");
-            if (savedTabs) {
-                const parsedTabs = JSON.parse(savedTabs);
-                if (Array.isArray(parsedTabs) && parsedTabs.length > 0) {
-                    parsedTabs.forEach(tab => {
-                        if (tab && typeof tab === 'object' && tab.title && tab.url) {
-                            addtab(tab.title, tab.url);
-                        }
-                    });
-                } else {
-                    createDefaultTab();
-                }
-            } else {
-                createDefaultTab();
-            }
-        } catch (error) {
-            createDefaultTab();
-        }
+        // Tab initialization moved to initializeTabs() function
 
         function createDefaultTab() {
             try {
@@ -478,19 +460,390 @@
             }
         }
 
-        // tab saving interval
+        // Tab saving is now handled by saveTabs() function called in setInterval
 
-        setInterval(() => {
+
+
+        // Robust tab management system with bug fixes
+        function addtab(name = "New Tab", url = null) {
+            try {
+                // Validate inputs
+                if (!name || typeof name !== 'string') {
+                    name = "New Tab";
+                }
+
+                // Create unique tab ID
+                const tabId = nextTabId++;
+                const tab = {
+                    id: tabId,
+                    title: name,
+                    url: url || "./start.html",
+                    element: null
+                };
+
+                // Add to tabs array
+                tabs.push(tab);
+
+                // Create DOM element
+                const tabElement = document.createElement('div');
+                tabElement.className = 'tab';
+                tabElement.setAttribute('data-tab-id', tabId);
+
+                tabElement.innerHTML = `
+                    <div class="tab-title">${name}</div>
+                    <div class="exit">×</div>
+                `;
+
+                // Add event listeners
+                tabElement.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('exit')) {
+                        closetab(tabId);
+                    } else {
+                        switchtab(tabId);
+                    }
+                });
+
+                // Insert before add-tab button
+                const tabBar = document.getElementById('tab-bar');
+                const addTabButton = document.getElementById('add-tab');
+                tabBar.insertBefore(tabElement, addTabButton);
+
+                // Store reference
+                tab.element = tabElement;
+
+                // Add drag and drop functionality
+                setupTabDragAndDrop(tabElement, tabId);
+
+                // Auto-switch to new tab if no active tab
+                if (tabs.length === 1 || !document.querySelector('.tab.active')) {
+                    switchtab(tabId);
+                }
+
+                console.log(`Tab created: ${name} (ID: ${tabId})`);
+                return tabId;
+            } catch (error) {
+                console.error('Error creating tab:', error);
+                return null;
+            }
+        }
+
+        function closetab(tabId) {
+            try {
+                // Find tab index
+                const tabIndex = tabs.findIndex(tab => tab.id === tabId);
+                if (tabIndex === -1) {
+                    console.error('Tab not found:', tabId);
+                    return;
+                }
+
+                const tab = tabs[tabIndex];
+                const isActive = tab.element.classList.contains('active');
+                const wasLastTab = tabs.length === 1;
+
+                // Remove DOM element
+                if (tab.element && tab.element.parentNode) {
+                    tab.element.remove();
+                }
+
+                // Remove from array
+                tabs.splice(tabIndex, 1);
+
+                // Handle switching logic
+                if (wasLastTab) {
+                    // If this was the last tab, create a new default tab
+                    currentTabId = 0;
+                    createDefaultTab();
+                } else if (isActive) {
+                    // If closing active tab, switch to adjacent tab
+                    let newActiveIndex = tabIndex;
+                    if (newActiveIndex >= tabs.length) {
+                        newActiveIndex = tabs.length - 1;
+                    }
+                    if (tabs[newActiveIndex]) {
+                        switchtab(tabs[newActiveIndex].id);
+                    }
+                }
+
+                console.log(`Tab closed: ${tab.title} (ID: ${tabId})`);
+            } catch (error) {
+                console.error('Error closing tab:', error);
+            }
+        }
+
+        function switchtab(tabId) {
+            try {
+                // Find tab
+                const tab = tabs.find(tab => tab.id === tabId);
+                if (!tab) {
+                    console.error('Tab not found for switching:', tabId);
+                    return;
+                }
+
+                // Update active states
+                document.querySelectorAll('.tab').forEach(tabEl => {
+                    tabEl.classList.remove('active');
+                });
+
+                if (tab.element) {
+                    tab.element.classList.add('active');
+                }
+
+                // Update current tab ID
+                currentTabId = tabId;
+
+                // Update iframe
+                const iframe = document.getElementById('iframe');
+                if (iframe) {
+                    iframe.src = tab.url;
+                }
+
+                // Update URL input
+                const urlInput = document.getElementById('url-input');
+                if (urlInput) {
+                    urlInput.value = tab.url;
+                }
+
+                console.log(`Switched to tab: ${tab.title} (ID: ${tabId})`);
+            } catch (error) {
+                console.error('Error switching tab:', error);
+            }
+        }
+
+        function getHomepageURL() {
+            try {
+                const savedHomepage = localStorage.getItem('axiomHomepage');
+                if (savedHomepage && savedHomepage !== 'custom') {
+                    return savedHomepage === 'start.html' ? './start.html' : './start.html';
+                }
+
+                const customHomepage = localStorage.getItem('axiomCustomHomepage');
+                if (customHomepage) {
+                    return customHomepage;
+                }
+
+                return './start.html';
+            } catch (error) {
+                console.error('Error getting homepage URL:', error);
+                return './start.html';
+            }
+        }
+
+        function getHomepageTitle() {
+            try {
+                const savedHomepage = localStorage.getItem('axiomHomepage');
+                if (savedHomepage === 'start.html') return 'Axiom Start';
+                if (savedHomepage === 'games.html') return 'Games';
+                if (savedHomepage === 'custom') {
+                    const customUrl = localStorage.getItem('axiomCustomHomepage');
+                    return customUrl ? new URL(customUrl).hostname : 'Custom Page';
+                }
+                return 'New Tab';
+            } catch (error) {
+                console.error('Error getting homepage title:', error);
+                return 'New Tab';
+            }
+        }
+
+        // Enhanced tab saving with error recovery
+        function saveTabs() {
             try {
                 if (Array.isArray(tabs) && tabs.length > 0) {
-                    localStorage.setItem("tabs", JSON.stringify(tabs));
+                    // Clean tab data before saving
+                    const cleanTabs = tabs.map(tab => ({
+                        id: tab.id,
+                        title: tab.title || 'Untitled',
+                        url: tab.url || './start.html'
+                    }));
+                    localStorage.setItem("tabs", JSON.stringify(cleanTabs));
+                } else {
+                    localStorage.removeItem("tabs");
                 }
             } catch (error) {
                 console.error('Failed to save tabs:', error);
+                // Try to save minimal state
+                try {
+                    if (tabs && tabs.length > 0) {
+                        localStorage.setItem("tabs_backup", JSON.stringify(tabs));
+                    }
+                } catch (backupError) {
+                    console.error('Failed to create backup:', backupError);
+                }
             }
-        }, 100); // 1/10th of a second, pretty good speed
+        }
 
+        // Improved tab restoration
+        function restoreTabs(savedTabs) {
+            try {
+                if (!Array.isArray(savedTabs) || savedTabs.length === 0) {
+                    createDefaultTab();
+                    return;
+                }
 
+                let restoredCount = 0;
+                savedTabs.forEach(tabData => {
+                    if (tabData && typeof tabData === 'object' &&
+                        (tabData.title || tabData.url)) {
+                        try {
+                            addtab(
+                                tabData.title || 'Restored Tab',
+                                tabData.url || './start.html'
+                            );
+                            restoredCount++;
+                        } catch (tabError) {
+                            console.error('Failed to restore tab:', tabError);
+                        }
+                    }
+                });
+
+                if (restoredCount === 0) {
+                    createDefaultTab();
+                }
+
+                console.log(`Restored ${restoredCount} tabs`);
+            } catch (error) {
+                console.error('Error restoring tabs:', error);
+                createDefaultTab();
+            }
+        }
+
+        // Enhanced initialization
+        function initializeTabs() {
+            try {
+                const savedTabs = localStorage.getItem("tabs");
+                if (savedTabs) {
+                    const parsedTabs = JSON.parse(savedTabs);
+                    restoreTabs(parsedTabs);
+                } else {
+                    createDefaultTab();
+                }
+            } catch (error) {
+                console.error('Error initializing tabs:', error);
+                createDefaultTab();
+            }
+        }
+
+        // Call initialization
+        initializeTabs();
+
+        // Drag and drop functionality for tabs
+        function setupTabDragAndDrop(tabElement, tabId) {
+            let dragStartX = 0;
+            let dragStartIndex = -1;
+
+            tabElement.draggable = true;
+
+            tabElement.addEventListener('dragstart', (e) => {
+                e.dataTransfer.effectAllowed = 'move';
+                tabElement.classList.add('dragging');
+
+                // Find the starting index
+                const allTabs = Array.from(document.querySelectorAll('.tab'));
+                dragStartIndex = allTabs.indexOf(tabElement);
+
+                // Store the tab ID
+                e.dataTransfer.setData('text/plain', tabId.toString());
+            });
+
+            tabElement.addEventListener('dragend', () => {
+                tabElement.classList.remove('dragging');
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.classList.remove('drag-over');
+                });
+            });
+
+            tabElement.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+            });
+
+            tabElement.addEventListener('drop', (e) => {
+                e.preventDefault();
+                const draggedTabId = parseInt(e.dataTransfer.getData('text/plain'));
+
+                if (draggedTabId === tabId) return; // Dropped on itself
+
+                reorderTabs(draggedTabId, tabId);
+            });
+        }
+
+        function reorderTabs(draggedTabId, targetTabId) {
+            try {
+                const draggedTabIndex = tabs.findIndex(tab => tab.id === draggedTabId);
+                const targetTabIndex = tabs.findIndex(tab => tab.id === targetTabId);
+
+                if (draggedTabIndex === -1 || targetTabIndex === -1) return;
+
+                // Remove dragged tab from array
+                const draggedTab = tabs.splice(draggedTabIndex, 1)[0];
+
+                // Insert at new position
+                const newIndex = targetTabIndex > draggedTabIndex ? targetTabIndex : targetTabIndex;
+                tabs.splice(newIndex, 0, draggedTab);
+
+                // Reorder DOM elements
+                const tabBar = document.getElementById('tab-bar');
+                const draggedElement = draggedTab.element;
+                const targetElement = tabs.find(tab => tab.id === targetTabId).element;
+
+                if (targetTabIndex > draggedTabIndex) {
+                    tabBar.insertBefore(draggedElement, targetElement.nextSibling);
+                } else {
+                    tabBar.insertBefore(draggedElement, targetElement);
+                }
+
+                console.log(`Reordered tabs: ${draggedTab.title} moved to position ${newIndex}`);
+            } catch (error) {
+                console.error('Error reordering tabs:', error);
+            }
+        }
+
+        // Enhanced keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            // Ctrl+T: New tab
+            if (e.ctrlKey && e.key === 't') {
+                e.preventDefault();
+                addtab();
+            }
+
+            // Ctrl+W: Close current tab
+            if (e.ctrlKey && e.key === 'w') {
+                e.preventDefault();
+                const activeTab = document.querySelector('.tab.active');
+                if (activeTab) {
+                    const tabId = parseInt(activeTab.getAttribute('data-tab-id'));
+                    closetab(tabId);
+                }
+            }
+
+            // Ctrl+Tab: Switch to next tab
+            if (e.ctrlKey && e.key === 'Tab') {
+                e.preventDefault();
+                const activeTab = document.querySelector('.tab.active');
+                if (activeTab) {
+                    const currentIndex = tabs.findIndex(tab => tab.element === activeTab);
+                    const nextIndex = (currentIndex + 1) % tabs.length;
+                    if (tabs[nextIndex]) {
+                        switchtab(tabs[nextIndex].id);
+                    }
+                }
+            }
+
+            // Ctrl+Shift+Tab: Switch to previous tab
+            if (e.ctrlKey && e.shiftKey && e.key === 'Tab') {
+                e.preventDefault();
+                const activeTab = document.querySelector('.tab.active');
+                if (activeTab) {
+                    const currentIndex = tabs.findIndex(tab => tab.element === activeTab);
+                    const prevIndex = currentIndex === 0 ? tabs.length - 1 : currentIndex - 1;
+                    if (tabs[prevIndex]) {
+                        switchtab(tabs[prevIndex].id);
+                    }
+                }
+            }
+        });
+
+        // Replace the old auto-save interval with improved version
+        setInterval(saveTabs, 100);
 
         function updateTabTitleAndUrl() {
             try {

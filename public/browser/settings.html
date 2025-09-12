@@ -11,8 +11,8 @@
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background-color: #1b1b1b;
-            color: #ffffff;
+            background-color: var(--theme-primary);
+            color: var(--theme-textPrimary);
             overflow-x: hidden;
             min-height: 100vh;
         }
@@ -21,8 +21,8 @@
             display: flex;
             align-items: center;
             padding: 20px;
-            background-color: #2a2a2a;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+            background-color: var(--theme-surface);
+            box-shadow: 0 2px 8px var(--theme-shadow);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -31,7 +31,7 @@
         .back-button {
             background: none;
             border: none;
-            color: #ffffff;
+            color: var(--theme-textPrimary);
             font-size: 24px;
             cursor: pointer;
             margin-right: 15px;
@@ -41,7 +41,7 @@
         }
 
         .back-button:hover {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: var(--theme-overlay);
         }
 
         .header h1 {
@@ -57,18 +57,18 @@
         }
 
         .settings-section {
-            background-color: #2a2a2a;
+            background-color: var(--theme-surface);
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 12px var(--theme-shadow);
         }
 
         .section-title {
             font-size: 20px;
             font-weight: 600;
             margin: 0 0 20px 0;
-            color: #ffffff;
+            color: var(--theme-textPrimary);
             display: flex;
             align-items: center;
             gap: 12px;
@@ -76,7 +76,7 @@
 
         .section-title .material-symbols-outlined {
             font-size: 24px;
-            color: #d8d8d8;
+            color: var(--theme-textSecondary);
         }
 
         .setting-item {
@@ -84,7 +84,7 @@
             justify-content: space-between;
             align-items: center;
             padding: 16px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 1px solid var(--theme-overlay);
         }
 
         .setting-item:last-child {
@@ -99,12 +99,12 @@
             font-size: 16px;
             font-weight: 500;
             margin-bottom: 4px;
-            color: #ffffff;
+            color: var(--theme-textPrimary);
         }
 
         .setting-description {
             font-size: 14px;
-            color: #a0aec0;
+            color: var(--theme-textTertiary);
             line-height: 1.4;
         }
 
@@ -133,7 +133,7 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-color: #4b4b4b;
+            background-color: var(--theme-surfaceLight);
             transition: .4s;
             border-radius: 24px;
         }
@@ -151,7 +151,7 @@
         }
 
         input:checked + .slider {
-            background-color: #d8d8d8;
+            background-color: var(--theme-textSecondary);
         }
 
         input:checked + .slider:before {
@@ -169,10 +169,10 @@
         }
 
         .dropdown-select {
-            background-color: #363636;
-            border: 1px solid #4b4b4b;
+            background-color: var(--theme-surface);
+            border: 1px solid var(--theme-surfaceLight);
             border-radius: 8px;
-            color: #ffffff;
+            color: var(--theme-textPrimary);
             padding: 8px 12px;
             font-size: 14px;
             cursor: pointer;
@@ -181,14 +181,14 @@
         }
 
         .dropdown-select:hover {
-            border-color: #d8d8d8;
+            border-color: var(--theme-textSecondary);
         }
 
         .input-field {
-            background-color: #363636;
-            border: 1px solid #4b4b4b;
+            background-color: var(--theme-surface);
+            border: 1px solid var(--theme-surfaceLight);
             border-radius: 8px;
-            color: #ffffff;
+            color: var(--theme-textPrimary);
             padding: 8px 12px;
             font-size: 14px;
             outline: none;
@@ -196,16 +196,16 @@
         }
 
         .input-field:focus {
-            border-color: #d8d8d8;
+            border-color: var(--theme-textSecondary);
         }
 
         .input-field::placeholder {
-            color: #718096;
+            color: var(--theme-textMuted);
         }
 
         .button {
-            background-color: #d8d8d8;
-            color: white;
+            background-color: var(--theme-textSecondary);
+            color: var(--theme-primary);
             border: none;
             border-radius: 8px;
             padding: 8px 16px;
@@ -220,19 +220,19 @@
         }
 
         .button.secondary {
-            background-color: #4b4b4b;
+            background-color: var(--theme-surfaceLight);
         }
 
         .button.secondary:hover {
-            background-color: #575757;
+            background-color: var(--theme-surfaceDark);
         }
 
         .version-info {
             text-align: center;
             padding: 20px;
-            color: #718096;
+            color: var(--theme-textMuted);
             font-size: 14px;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-top: 1px solid var(--theme-overlay);
             margin-top: 20px;
         }
 

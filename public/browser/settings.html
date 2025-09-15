@@ -7,7 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Axiom Settings</title>
     <script src="./js/themeManager.js"></script>
+    <script src="./js/plugins.js" defer></script>
     <style>
+    
         body {
             margin: 0;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -321,6 +323,20 @@
                 </div>
             </div>
 
+            
+             <div class="setting-item" style="display: none;">
+                 <div class="setting-info">
+                     <div class="setting-label">Proxy</div>
+                     <div class="setting-description">Pick the proxy to use</div>
+                 </div>
+                 <div class="setting-control">
+                     <select class="dropdown-select" id="proxy-select">
+                         <option value="scramjet" selected>ScramJet (Default)</option>
+                         <option value="oxygen">Oxygen (Ours)</option>
+                     </select>
+                 </div>
+             </div>
+
             <div class="setting-item">
                 <div class="setting-info">
                     <div class="setting-label">Homepage</div>
@@ -334,6 +350,7 @@
                     </select>
                 </div>
             </div>
+
 
             <div class="setting-item" id="custom-homepage-item" style="display: none;">
                 <div class="setting-info">
@@ -362,6 +379,36 @@
                     <button class="button secondary" onclick="clearBrowsingData()">Clear Data</button>
                 </div>
             </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Block Popups</div>
+                    <div class="setting-description">Prevent popup windows from appearing</div>
+                </div>
+                <div class="setting-control">
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="block-popups-toggle">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+            </div>
+        <div class="settings-section">
+            <h2 class="section-title">
+                <span class="material-symbols-outlined">key</span>
+                Premium
+            </h2>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Premium Key</div>
+                    <div class="setting-description">Enter your premium key to unlock advanced features</div>
+                </div>
+                <div class="setting-control">
+                    <input type="text" class="input-field" id="premium-key-input" placeholder="Enter premium key">
+                    <button class="button" onclick="addPremiumKey()">Add Key</button>
+                </div>
+            </div>
+        </div>
 
          
 
@@ -396,7 +443,7 @@
         </div>
 
         <div class="version-info">
-            Axiom Browser v2.0 - Built with ❤️ for privacy and speed
+            Axiom Browser v2.5 - Built with ❤️ for privacy and speed
         </div>
     </div>
 
@@ -413,16 +460,152 @@
             }
 
             loadSettings();
+
+            const savedPremiumKey = localStorage.getItem('axiomPremiumKey') || '';
+            document.getElementById('premium-key-input').value = savedPremiumKey;
             
             setupEventListeners();
         }
 
+        function addPremiumKey() {
+            const key = document.getElementById('premium-key-input').value.trim();
+            if (key) {
+                window.axiom.setKey(key);
+                window.axiom.getKeyInfo(key);
+                alert('Premium key added and verified.');
+            } else {
+                alert('Please enter a valid premium key.');
+            }
+        }
+
         function loadSettings() {
+            // Load auto theme setting
+            const autoTheme = localStorage.getItem('axiomThemeAuto') === 'true';
+            document.getElementById('auto-theme-toggle').checked = autoTheme;
+
+            // Load search engine
+            const searchEngine = localStorage.getItem('axiomSearchEngine') || 'https://search.brave.com/search?q=';
+            document.getElementById('search-engine-select').value = searchEngine;
+
+            // Load proxy
+            const proxy = localStorage.getItem('axiomProxy') || 'scramjet';
+            document.getElementById('proxy-select').value = proxy;
+
+            // Load homepage
+            const homepage = localStorage.getItem('axiomHomepage') || 'start';
+            document.getElementById('homepage-select').value = homepage;
+
+            const customHomepage = localStorage.getItem('axiomCustomHomepage');
+            if (homepage === 'custom' && customHomepage) {
+                document.getElementById('custom-homepage-input').value = customHomepage;
+                document.getElementById('custom-homepage-item').style.display = 'block';
+            }
+
+            // Load developer mode
+            const devMode = localStorage.getItem('axiomDeveloperMode') === 'true';
+            document.getElementById('developer-mode-toggle').checked = devMode;
+
+            // Load block popups
+            const blockPopups = localStorage.getItem('axiomBlockPopups') === 'true';
+            document.getElementById('block-popups-toggle').checked = blockPopups;
+        }
+
+        function setupEventListeners() {
+            // Auto theme toggle
+            document.getElementById('auto-theme-toggle').addEventListener('change', function(e) {
+                localStorage.setItem('axiomThemeAuto', e.target.checked);
+                if (e.target.checked && window.themeManager) {
+                    window.themeManager.enableAutoTheme();
+                }
+            });
+
+            // Search engine select
+            document.getElementById('search-engine-select').addEventListener('change', function(e) {
+                localStorage.setItem('axiomSearchEngine', e.target.value);
+            });
+
+            // Proxy select
+            document.getElementById('proxy-select').addEventListener('change', function(e) {
+                if (window.axiomPluginAPI) {
+                    window.axiomPluginAPI.setProxy(e.target.value);
+                }
+            });
+
+            // Homepage select
+            document.getElementById('homepage-select').addEventListener('change', function(e) {
+                const value = e.target.value;
+                if (window.axiomPluginAPI) {
+                    if (value === 'custom') {
+                        document.getElementById('custom-homepage-item').style.display = 'block';
+                    } else {
+                        document.getElementById('custom-homepage-item').style.display = 'none';
+                        window.axiomPluginAPI.setHomepage(value);
+                    }
+                }
+            });
+
+            // Custom homepage input
+            document.getElementById('custom-homepage-input').addEventListener('input', function(e) {
+                if (window.axiomPluginAPI) {
+                    window.axiomPluginAPI.setHomepage('custom', e.target.value);
+                }
+            });
+
+            // Developer mode toggle
+            document.getElementById('developer-mode-toggle').addEventListener('change', function(e) {
+                localStorage.setItem('axiomDeveloperMode', e.target.checked);
+            });
+
+            // Block popups toggle
+            document.getElementById('block-popups-toggle').addEventListener('change', function(e) {
+                localStorage.setItem('axiomBlockPopups', e.target.checked);
+            });
+        }
+
+        function clearBrowsingData() {
+            // Clear tabs, history, and other stored data
+            localStorage.removeItem('axiomTabs');
+            localStorage.removeItem('axiomHistory');
+            // Note: Cookies are handled by resetSettings
+            alert('Browsing data cleared successfully.');
+        }
+
+        function resetSettings() {
+            if (window.axiomPluginAPI) {
+                window.axiomPluginAPI.resetAll();
+            } else {
+                alert('Plugin API not available. Settings reset manually.');
+                localStorage.clear();
+                document.cookie.split(';').forEach(cookie => {
+                    document.cookie = cookie.replace(/^ +/, '').replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+                });
+                window.location.reload();
+            }
+        }
+
+        function loadSettings() {
+            const validSearchEngines = ['https://search.brave.com/search?q=', 'https://www.google.com/search?q=', 'https://duckduckgo.com/?q=', 'https://www.bing.com/search?q='];
             const savedSearchEngine = localStorage.getItem('search') || 'https://search.brave.com/search?q=';
+            if (!validSearchEngines.includes(savedSearchEngine)) {
+                savedSearchEngine = 'https://search.brave.com/search?q=';
+                localStorage.setItem('search', savedSearchEngine);
+            }
             document.getElementById('search-engine-select').value = savedSearchEngine;
 
+            const validHomepages = ['start.html', 'games.html', 'custom'];
             const savedHomepage = localStorage.getItem('axiomHomepage') || 'start.html';
+            if (!validHomepages.includes(savedHomepage)) {
+                savedHomepage = 'start.html';
+                localStorage.setItem('axiomHomepage', savedHomepage);
+            }
             document.getElementById('homepage-select').value = savedHomepage;
+
+            const savedProxy = localStorage.getItem('axiomProxy') || 'scramjet';
+            if (!['scramjet', 'oxygen'].includes(savedProxy)) {
+                savedProxy = 'scramjet';
+                localStorage.setItem('axiomProxy', 'scramjet');
+            }
+            document.getElementById('proxy-select').value = savedProxy;
             
             if (savedHomepage === 'custom') {
                 document.getElementById('custom-homepage-item').style.display = 'block';
@@ -457,6 +640,11 @@
                 }
             });
 
+            document.getElementById('proxy-select').addEventListener('change', function() {
+                const value = this.value;
+                localStorage.setItem('axiomProxy', value);
+            });
+
             document.getElementById('custom-homepage-input').addEventListener('change', function() {
                 localStorage.setItem('axiomCustomHomepage', this.value);
             });
@@ -473,6 +661,10 @@
 
             document.getElementById('developer-mode-toggle').addEventListener('change', function() {
                 localStorage.setItem('axiomDeveloperMode', this.checked);
+            });
+
+            document.getElementById('block-popups-toggle').addEventListener('change', function() {
+                localStorage.setItem('axiomBlockPopups', this.checked);
             });
         }
 
@@ -513,7 +705,17 @@
                 window.location.reload();
             }
         }
-    </script>
+    function addPremiumKey() {
+            const key = document.getElementById('premium-key-input').value.trim();
+            if (key) {
+                window.axiom.setKey(key);
+                window.axiom.getKeyInfo(key);
+                alert('Premium key added and verified.');
+            } else {
+                alert('Please enter a valid premium key.');
+            }
+        }
+        </script>
 </body>
 
 </html>

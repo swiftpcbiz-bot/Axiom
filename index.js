@@ -85,7 +85,6 @@ fastify.get("/api/youtube/search", async (request, reply) => {
         const html = await response.text();
         const $ = cheerio.load(html);
 
-        // Parse videos using the provided HTML structure
         const videos = $('.pure-u-1.pure-u-md-1-4').map((index, element) => {
             const $video = $(element);
             const $thumbnailLink = $video.find('.thumbnail a');
@@ -156,16 +155,7 @@ fastify.get("/api/youtube/search", async (request, reply) => {
 })
 
 fastify.post("/api/premium/check", async (request, reply) => {
-    // for development
-    if (request.body.axiomPremiumKey == "test") {
-        reply.send({ success: true });
-        return
-    }
-    else {
-            reply.send({ success: false });
-            return
-        
-    }
+
     let active_keys = process.env.ACTIVE_KEYS.split(',');
     let key = request.body.axiomPremiumKey;
     if (active_keys.includes(key)) {

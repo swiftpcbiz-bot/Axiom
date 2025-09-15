@@ -308,6 +308,57 @@ class ThemeManager {
                     ytSurface: 'rgba(0, 0, 0, 0.05)',
                     ytHover: 'rgba(0, 0, 0, 0.08)'
                 }
+            },
+
+            fishstick: {
+                name: 'FishStick',
+                colors: {
+
+                    primary: '#3276C0',
+                    secondary: '#8DDAEC',
+                    tertiary: '#A8E4F2',
+                    accent: '#3276C0',
+
+
+                    surface: '#8DDAEC',
+                    surfaceLight: '#B8E8F5',
+                    surfaceDark: '#6BC8E0',
+
+
+                    textPrimary: '#1a365d',
+                    textSecondary: '#2d3748',
+                    textTertiary: '#4a5568',
+                    textMuted: '#718096',
+
+
+                    hover: '#B8E8F5',
+                    active: '#9BD8F0',
+                    focus: 'rgba(50, 118, 192, 0.2)',
+
+
+                    error: '#e53e3e',
+                    success: '#38a169',
+                    warning: '#d69e2e',
+
+
+                    overlay: 'rgba(255, 255, 255, 0.15)',
+                    overlayHover: 'rgba(255, 255, 255, 0.25)',
+                    shadow: 'rgba(50, 118, 192, 0.2)',
+
+
+                    backgroundGradient: 'linear-gradient(135deg, #3276C0 0%, #8DDAEC 50%, #A8E4F2 100%)',
+                    windowBackground: 'rgba(141, 218, 236, 0.9)',
+
+
+                    userMessage: '#3276C0',
+                    aiMessage: '#A8E4F2',
+                    inputBackground: '#8DDAEC',
+
+
+                    ytBackground: '#3276C0',
+                    ytSurface: 'rgba(255, 255, 255, 0.2)',
+                    ytHover: 'rgba(255, 255, 255, 0.3)'
+                }
             }
         };
         
@@ -495,6 +546,24 @@ class ThemeManager {
             #sidebar button:hover {
                 background-color: ${theme.colors.surfaceDark} !important;
                 border-color: ${theme.colors.surface} !important;
+            }
+
+            /* Material Symbols theming */
+            .material-symbols-outlined {
+                color: ${theme.colors.textPrimary} !important;
+                transition: color 0.2s ease !important;
+            }
+
+            .exit:hover .material-symbols-outlined {
+                color: ${theme.colors.error} !important;
+            }
+
+            .status-icon .material-symbols-outlined {
+                color: ${theme.colors.textSecondary} !important;
+            }
+
+            .section-title .material-symbols-outlined {
+                color: ${theme.colors.textSecondary} !important;
             }
             
             #sidemenu {
@@ -855,6 +924,15 @@ class ThemeManager {
                 background-color: ${theme.colors.primary} !important;
                 color: ${theme.colors.textPrimary} !important;
             }
+
+            /* Global Material Symbols theming */
+            .material-symbols-outlined {
+                color: ${theme.colors.textPrimary} !important;
+            }
+
+            .status-icon .material-symbols-outlined {
+                color: ${theme.colors.textSecondary} !important;
+            }
             
             .header {
                 background-color: ${theme.colors.secondary} !important;
@@ -961,6 +1039,15 @@ class ThemeManager {
             .version-info {
                 color: ${theme.colors.textMuted} !important;
                 border-top: 1px solid ${theme.colors.surface} !important;
+            }
+
+            /* Material Symbols theming for settings */
+            .material-symbols-outlined {
+                color: ${theme.colors.textPrimary} !important;
+            }
+
+            .section-title .material-symbols-outlined {
+                color: ${theme.colors.accent} !important;
             }
             
             
@@ -1398,3 +1485,5 @@ window.themeManager = new ThemeManager();
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = ThemeManager;
 }
+// Instantiate and expose ThemeManager globally
+window.themeManager = new ThemeManager();

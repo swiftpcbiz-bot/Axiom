@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet" />
@@ -8,8 +7,12 @@
     <title>Axiom</title>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/ui/1.14.1/jquery-ui.min.js" integrity="sha256-AlTido85uXPlSyyaZNsjJXeCs07eSv3r43kyCVc8ChI=" crossorigin="anonymous"></script>
+    <script src="./js/global.js" defer></script>
     <script src="./js/themeManager.js"></script>
+    <script src="./js/plugins.js"></script>
+    <script src="./js/auth.js"></script>
     <link rel="stylesheet" href="https://code.jquery.com/ui/1.14.1/themes/ui-lightness/jquery-ui.css">
+
     <style>
         body {
             margin: 0;
@@ -131,6 +134,17 @@
             transform: scale(1.1);
         }
 
+        .tab .exit {
+            color: var(--theme-textSecondary) !important;
+            transition: all 0.2s ease !important;
+        }
+
+        .tab .exit:hover {
+            background-color: var(--theme-overlay) !important;
+            color: var(--theme-error) !important;
+            transform: scale(1.1) !important;
+        }
+
 
         #url-bar {
             width: calc(100% - 80px);
@@ -139,6 +153,7 @@
             right: 6px;
             border-radius: 8px;
             margin-top: 38px;
+            border: none;
             display: flex;
             gap: 8px;
             height: 17px;
@@ -152,6 +167,7 @@
             border-top-left-radius: 15px;
             border-bottom-left-radius: 15px;
             width: 30px;
+            height: 15px;
             background-color: var(--theme-surface);
             padding-left: 8px;
             outline: none;
@@ -184,15 +200,43 @@
             transform: scale(0.9);
         }
 
+        .material-symbols-outlined,
+        span.material-symbols-outlined,
+        button .material-symbols-outlined,
+        #sidebar button span.material-symbols-outlined,
+        #add-tab span.material-symbols-outlined,
+        #url-bar button span.material-symbols-outlined,
+        .far-side-buttons button span.material-symbols-outlined {
+            color: var(--theme-textPrimary) !important;
+            transition: color 0.2s ease !important;
+        }
+
         #url-bar button span.material-symbols-outlined {
             font-size: 20px;
+        }
+
+        .input-expansion span.material-symbols-outlined,
+        .globe-icon.material-symbols-outlined {
+            color: var(--theme-textSecondary) !important;
+            font-size: 16px;
+        }
+
+        .tab .material-symbols-outlined,
+        .exit.material-symbols-outlined {
+            color: var(--theme-textSecondary) !important;
+        }
+
+        .tab .exit.material-symbols-outlined:hover,
+        .exit.material-symbols-outlined:hover {
+            color: var(--theme-error) !important;
         }
 
         .input-expansion {
             background-color: var(--theme-surface);
             border-top-right-radius: 15px;
             border-bottom-right-radius: 15px;
-            height: 30px;
+            height: 15px;
+            padding: 8px;
             width: 30px;
             display: flex;
             align-items: center;
@@ -219,14 +263,45 @@
             margin-top: 15px;
             background-color: transparent;
             z-index: 55;
-            justify-content: center;
+            display: flex;
+            flex-direction: column;
             align-items: center;
+            position: relative;
         }
 
         #sidebar img {
-            width: 55px;
-            height: 55px;
+            width: 40px;
+            height: 40px;
             filter: invert(1);
+            margin-bottom: 8px;
+            margin-top: 5px;
+            border-radius: 6px;
+            padding: 2px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .logo-separator-bottom {
+            width: 35px;
+            height: 1px;
+            background-color: var(--theme-surfaceLight);
+            margin: 8px 0 12px 0;
+            opacity: 0.6;
+        }
+
+        .logo-separator-right {
+            position: absolute;
+            width: 1px;
+            height: 50px;
+            background-color: var(--theme-surfaceLight);
+            right: -27px;
+            top: 25px;
+            opacity: 0.6;
+        }
+
+        #sidebar img:hover {
+            transform: scale(1.05);
+            opacity: 0.8;
         }
 
         #sidebar button {
@@ -236,7 +311,7 @@
             color: var(--theme-textPrimary);
             cursor: pointer;
             height: 40px;
-            margin-top: 10px;
+            margin-top: 6px;
             width: 40px;
             display: flex;
             align-items: center;
@@ -358,6 +433,61 @@
             border-radius: 50%;
             cursor: pointer;
         }
+        .dialog {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: var(--theme-surface);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            color: var(--theme-textPrimary);
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .dialog-message {
+            margin-bottom: 20px;
+            font-size: 16px;
+        }
+
+        .dialog-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+
+        .dialog-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: var(--theme-primary);
+            color: var(--theme-textPrimary);
+            transition: background-color 0.2s ease;
+        }
+
+        .dialog-button:hover {
+            background-color: var(--theme-hover);
+        }
+
+        .dialog-button-positive {
+            background-color: var(--theme-accent);
+        }
+
+        .dialog-button-positive:hover {
+            background-color: var(--theme-accentHover);
+        }
+
+        .dialog-button-negative {
+            background-color: var(--theme-error);
+        }
+
+        .dialog-button-negative:hover {
+            background-color: var(--theme-errorHover);
+        }
 
     </style>
 </head>
@@ -375,30 +505,33 @@
 
         <div id="sidebar">
             <!-- AXIOM ON TOP-->
-            <center>
-                <img src="assets/trans-logo.png">
+            <img src="assets/trans-logo.png">
 
-                <button onclick="sidebarload('yt')">
-                    <span class="material-symbols-outlined">play_arrow</span>
+            <button onclick="sidebarload('yt')">
+                <span class="material-symbols-outlined">play_arrow</span>
+            </button>
+            <button onclick="load('games')">
+                <span class="material-symbols-outlined">stadia_controller</span>
+            </button>
+            <button onclick="load('movies')">
+                <span class="material-symbols-outlined">movie</span>
+            </button>
+            <button onclick="sidebarload('ai')">
+                <span class="material-symbols-outlined">network_intelligence</span>
+            </button>
+            <div id="bottom-sidebar">
+                            <button id="login-sidebar-button">
+                <span class="material-symbols-outlined">account_circle</span>
+            </button>
+                <button onclick="openSettings()">
+                    <span class="material-symbols-outlined">settings</span>
                 </button>
-                <button onclick="load('games')">
-                    <span class="material-symbols-outlined">stadia_controller</span>
-                </button>
-                <button onclick="sidebarload('ai')">
-                    <span class="material-symbols-outlined">network_intelligence</span>
-                </button>
-                <div id="bottom-sidebar">
-                    <button onclick="openSettings()">
-                        <span class="material-symbols-outlined">settings</span>
-                    </button>
-                </div>
-            </center>
+            </div>
         </div>
         <div id="tab-bar">
             <div id="add-tab" onclick="addtab()">
                 <span class="material-symbols-outlined">add</span>
             </div>
-
         </div>
         <div id="url-bar">
             <button>
@@ -413,8 +546,7 @@
             <div id="input">
                 <input type="text" id="url-input" placeholder="What are you looking for today?" />
                 <div class="input-expansion">
-                    <div id="separator"></div>
-                    <span class="material-symbols-outlined" style="font-size: 16px;">globe</span>
+                    <span class="material-symbols-outlined globe-icon">globe</span>
                 </div>
             </div>
             <div class="far-side-buttons" style="display: none;">
@@ -435,8 +567,7 @@
         </div>
 
     </div>
-
-    <script>
+<script>
 
         let active = false;
         let activeApp = "";
@@ -448,7 +579,6 @@
         let dragStartX = 0;
         let dragStartIndex = 0;
 
-        // Tab initialization moved to initializeTabs() function
 
         function createDefaultTab() {
             try {
@@ -460,19 +590,12 @@
             }
         }
 
-        // Tab saving is now handled by saveTabs() function called in setInterval
-
-
-
-        // Robust tab management system with bug fixes
         function addtab(name = "New Tab", url = null) {
             try {
-                // Validate inputs
                 if (!name || typeof name !== 'string') {
                     name = "New Tab";
                 }
 
-                // Create unique tab ID
                 const tabId = nextTabId++;
                 const tab = {
                     id: tabId,
@@ -481,10 +604,8 @@
                     element: null
                 };
 
-                // Add to tabs array
                 tabs.push(tab);
 
-                // Create DOM element
                 const tabElement = document.createElement('div');
                 tabElement.className = 'tab';
                 tabElement.setAttribute('data-tab-id', tabId);
@@ -494,29 +615,24 @@
                     <div class="exit">×</div>
                 `;
 
-                // Add event listeners
                 tabElement.addEventListener('click', (e) => {
                     if (e.target.classList.contains('exit')) {
                         closetab(tabId);
                     } else {
-                        switchtab(tabId);
+                        switchTab(tabId);
                     }
                 });
 
-                // Insert before add-tab button
                 const tabBar = document.getElementById('tab-bar');
                 const addTabButton = document.getElementById('add-tab');
                 tabBar.insertBefore(tabElement, addTabButton);
 
-                // Store reference
                 tab.element = tabElement;
 
-                // Add drag and drop functionality
                 setupTabDragAndDrop(tabElement, tabId);
 
-                // Auto-switch to new tab if no active tab
                 if (tabs.length === 1 || !document.querySelector('.tab.active')) {
-                    switchtab(tabId);
+                    switchTab(tabId);
                 }
 
                 console.log(`Tab created: ${name} (ID: ${tabId})`);
@@ -529,7 +645,6 @@
 
         function closetab(tabId) {
             try {
-                // Find tab index
                 const tabIndex = tabs.findIndex(tab => tab.id === tabId);
                 if (tabIndex === -1) {
                     console.error('Tab not found:', tabId);
@@ -540,27 +655,22 @@
                 const isActive = tab.element.classList.contains('active');
                 const wasLastTab = tabs.length === 1;
 
-                // Remove DOM element
                 if (tab.element && tab.element.parentNode) {
                     tab.element.remove();
                 }
 
-                // Remove from array
                 tabs.splice(tabIndex, 1);
 
-                // Handle switching logic
                 if (wasLastTab) {
-                    // If this was the last tab, create a new default tab
                     currentTabId = 0;
                     createDefaultTab();
                 } else if (isActive) {
-                    // If closing active tab, switch to adjacent tab
                     let newActiveIndex = tabIndex;
                     if (newActiveIndex >= tabs.length) {
                         newActiveIndex = tabs.length - 1;
                     }
                     if (tabs[newActiveIndex]) {
-                        switchtab(tabs[newActiveIndex].id);
+                        switchTab(tabs[newActiveIndex].id);
                     }
                 }
 
@@ -570,16 +680,14 @@
             }
         }
 
-        function switchtab(tabId) {
+        function switchTab(tabId) {
             try {
-                // Find tab
                 const tab = tabs.find(tab => tab.id === tabId);
                 if (!tab) {
                     console.error('Tab not found for switching:', tabId);
                     return;
                 }
 
-                // Update active states
                 document.querySelectorAll('.tab').forEach(tabEl => {
                     tabEl.classList.remove('active');
                 });
@@ -588,16 +696,13 @@
                     tab.element.classList.add('active');
                 }
 
-                // Update current tab ID
                 currentTabId = tabId;
 
-                // Update iframe
                 const iframe = document.getElementById('iframe');
                 if (iframe) {
                     iframe.src = tab.url;
                 }
 
-                // Update URL input
                 const urlInput = document.getElementById('url-input');
                 if (urlInput) {
                     urlInput.value = tab.url;
@@ -644,11 +749,9 @@
             }
         }
 
-        // Enhanced tab saving with error recovery
         function saveTabs() {
             try {
                 if (Array.isArray(tabs) && tabs.length > 0) {
-                    // Clean tab data before saving
                     const cleanTabs = tabs.map(tab => ({
                         id: tab.id,
                         title: tab.title || 'Untitled',
@@ -660,7 +763,6 @@
                 }
             } catch (error) {
                 console.error('Failed to save tabs:', error);
-                // Try to save minimal state
                 try {
                     if (tabs && tabs.length > 0) {
                         localStorage.setItem("tabs_backup", JSON.stringify(tabs));
@@ -671,7 +773,6 @@
             }
         }
 
-        // Improved tab restoration
         function restoreTabs(savedTabs) {
             try {
                 if (!Array.isArray(savedTabs) || savedTabs.length === 0) {
@@ -706,7 +807,6 @@
             }
         }
 
-        // Enhanced initialization
         function initializeTabs() {
             try {
                 const savedTabs = localStorage.getItem("tabs");
@@ -721,11 +821,8 @@
                 createDefaultTab();
             }
         }
-
-        // Call initialization
         initializeTabs();
 
-        // Drag and drop functionality for tabs
         function setupTabDragAndDrop(tabElement, tabId) {
             let dragStartX = 0;
             let dragStartIndex = -1;
@@ -735,12 +832,9 @@
             tabElement.addEventListener('dragstart', (e) => {
                 e.dataTransfer.effectAllowed = 'move';
                 tabElement.classList.add('dragging');
-
-                // Find the starting index
-                const allTabs = Array.from(document.querySelectorAll('.tab'));
+ const allTabs = Array.from(document.querySelectorAll('.tab'));
                 dragStartIndex = allTabs.indexOf(tabElement);
 
-                // Store the tab ID
                 e.dataTransfer.setData('text/plain', tabId.toString());
             });
 
@@ -760,7 +854,7 @@
                 e.preventDefault();
                 const draggedTabId = parseInt(e.dataTransfer.getData('text/plain'));
 
-                if (draggedTabId === tabId) return; // Dropped on itself
+                if (draggedTabId === tabId) return; 
 
                 reorderTabs(draggedTabId, tabId);
             });
@@ -772,15 +866,11 @@
                 const targetTabIndex = tabs.findIndex(tab => tab.id === targetTabId);
 
                 if (draggedTabIndex === -1 || targetTabIndex === -1) return;
-
-                // Remove dragged tab from array
                 const draggedTab = tabs.splice(draggedTabIndex, 1)[0];
 
-                // Insert at new position
                 const newIndex = targetTabIndex > draggedTabIndex ? targetTabIndex : targetTabIndex;
                 tabs.splice(newIndex, 0, draggedTab);
 
-                // Reorder DOM elements
                 const tabBar = document.getElementById('tab-bar');
                 const draggedElement = draggedTab.element;
                 const targetElement = tabs.find(tab => tab.id === targetTabId).element;
@@ -797,15 +887,12 @@
             }
         }
 
-        // Enhanced keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            // Ctrl+T: New tab
             if (e.ctrlKey && e.key === 't') {
                 e.preventDefault();
                 addtab();
             }
 
-            // Ctrl+W: Close current tab
             if (e.ctrlKey && e.key === 'w') {
                 e.preventDefault();
                 const activeTab = document.querySelector('.tab.active');
@@ -815,7 +902,6 @@
                 }
             }
 
-            // Ctrl+Tab: Switch to next tab
             if (e.ctrlKey && e.key === 'Tab') {
                 e.preventDefault();
                 const activeTab = document.querySelector('.tab.active');
@@ -823,12 +909,11 @@
                     const currentIndex = tabs.findIndex(tab => tab.element === activeTab);
                     const nextIndex = (currentIndex + 1) % tabs.length;
                     if (tabs[nextIndex]) {
-                        switchtab(tabs[nextIndex].id);
+                        switchTab(tabs[nextIndex].id);
                     }
                 }
             }
 
-            // Ctrl+Shift+Tab: Switch to previous tab
             if (e.ctrlKey && e.shiftKey && e.key === 'Tab') {
                 e.preventDefault();
                 const activeTab = document.querySelector('.tab.active');
@@ -836,13 +921,12 @@
                     const currentIndex = tabs.findIndex(tab => tab.element === activeTab);
                     const prevIndex = currentIndex === 0 ? tabs.length - 1 : currentIndex - 1;
                     if (tabs[prevIndex]) {
-                        switchtab(tabs[prevIndex].id);
+                        switchTab(tabs[prevIndex].id);
                     }
                 }
             }
         });
 
-        // Replace the old auto-save interval with improved version
         setInterval(saveTabs, 100);
 
         function updateTabTitleAndUrl() {
@@ -892,7 +976,7 @@
                 let processedUrl = url;
                 
                 try {
-                    if (processedUrl.includes("prxy")) {
+                    if (processedUrl.includes("prxy.html") && processedUrl.includes("url=")) {
                         const urlParam = processedUrl.split("url=")[1];
                         if (urlParam) {
                             processedUrl = atob(urlParam);
@@ -1070,10 +1154,12 @@
             if (item == "games"){
                 addtab("Games", "games.html");
             }
+            if (item == "movies"){
+                addtab("Movies", "./features/movies.html");
+            }
         }
 
         function addtab(name="New Tab", url=null) {
-            // Use custom homepage if no URL specified
             if (!url) {
                 url = getHomepageURL();
                 if (name === "New Tab") {
@@ -1128,7 +1214,6 @@
                 if (tabData) {
                     document.getElementById('iframe').src = tabData.url;
                     
-                    // Inject dev tools after switching tab
                     setTimeout(() => {
                         injectDevToolsIntoIframe();
                     }, 1000);
@@ -1424,7 +1509,7 @@
                 
                 if (!x) return;
                 
-                if (x.includes("prxy")) {
+                if (x.includes("prxy.html") && x.includes("url=")) {
                     const urlPart = x.split("url=")[1];
                     if (urlPart) {
                         try {
@@ -1436,7 +1521,7 @@
                     }
                 }
                 
-                if (x.startsWith(window.location.origin) && !x.includes("prxy")) {
+                if (x.startsWith(window.location.origin) && !x.includes("prxy.html")) {
                     const pathParts = x.split("/");
                     if (pathParts.length > 0) {
                         const lastPart = pathParts[pathParts.length - 1];
@@ -1458,7 +1543,7 @@
                         });
                     }
                 } catch (e) {
-                    // Cross-origin iframe, can't access title
+                    
                 }
                 
                 urlInput.value = x;
@@ -1849,7 +1934,188 @@
         } catch (error) {
             console.error('Error setting up storage listener:', error);
         }
+
+    </script>
+
+    <div id="login-dialog" class="dialog" style="display: none;">
+        <h2 id="dialog-title">Login to Axiom</h2>
+        <div class="dialog-message">
+            <label for="login-email">Email:</label>
+            <input type="email" id="login-email" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid var(--theme-textSecondary); border-radius: 5px; background-color: var(--theme-surface); color: var(--theme-textPrimary);" placeholder="Enter your email">
+            <label for="login-password">Password:</label>
+            <input type="password" id="login-password" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid var(--theme-textSecondary); border-radius: 5px; background-color: var(--theme-surface); color: var(--theme-textPrimary);" placeholder="Enter your password">
+            <div id="confirm-password-container" style="display: none;">
+                <label for="login-confirm-password">Confirm Password:</label>
+                <input type="password" id="login-confirm-password" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid var(--theme-textSecondary); border-radius: 5px; background-color: var(--theme-surface); color: var(--theme-textPrimary);" placeholder="Confirm your password">
+            </div>
+        </div>
+        <div class="dialog-buttons">
+            <button class="dialog-button" id="switch-to-signup">Create Account</button>
+            <button class="dialog-button dialog-button-positive" id="login-button">Login</button>
+            <button class="dialog-button" id="cancel-login">Cancel</button>
+        </div>
+    </div>
+
+    <script>
+        let isSignupMode = false;
+
+        document.getElementById('login-sidebar-button').addEventListener('click', () => {
+            // Reset to login mode
+            isSignupMode = false;
+            document.getElementById('dialog-title').textContent = 'Login to Axiom';
+            document.getElementById('login-button').textContent = 'Login';
+            document.getElementById('switch-to-signup').textContent = 'Create Account';
+            document.getElementById('confirm-password-container').style.display = 'none';
+            document.getElementById('login-dialog').style.display = 'block';
+        });
+
+        // Switch to signup mode
+        document.getElementById('switch-to-signup').addEventListener('click', () => {
+            isSignupMode = !isSignupMode;
+            if (isSignupMode) {
+                document.getElementById('dialog-title').textContent = 'Sign Up for Axiom';
+                document.getElementById('login-button').textContent = 'Sign Up';
+                document.getElementById('switch-to-signup').textContent = 'Back to Login';
+                document.getElementById('confirm-password-container').style.display = 'block';
+            } else {
+                document.getElementById('dialog-title').textContent = 'Login to Axiom';
+                document.getElementById('login-button').textContent = 'Login';
+                document.getElementById('switch-to-signup').textContent = 'Create Account';
+                document.getElementById('confirm-password-container').style.display = 'none';
+            }
+        });
+
+        // Login/Signup button handler
+        document.getElementById('login-button').addEventListener('click', async () => {
+            const email = document.getElementById('login-email').value.trim();
+            const password = document.getElementById('login-password').value;
+
+            if (!email || !password) {
+                alert('Please enter both email and password.');
+                return;
+            }
+
+            // Wait for auth functions to be available
+            let retries = 0;
+            while ((!window.auth || !window.signInWithEmailAndPassword || !window.createUserWithEmailAndPassword) && retries < 50) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+                retries++;
+            }
+
+            if (!window.auth) {
+                alert('Authentication system not ready. Please try again.');
+                return;
+            }
+
+            if (isSignupMode) {
+                const confirmPassword = document.getElementById('login-confirm-password').value;
+                if (password !== confirmPassword) {
+                    alert('Passwords do not match.');
+                    return;
+                }
+                try {
+                    const userCredential = await window.createUserWithEmailAndPassword(window.auth, email, password);
+                    console.log('Signed up:', userCredential.user);
+                    document.getElementById('login-dialog').style.display = 'none';
+                    // Clear form
+                    document.getElementById('login-email').value = '';
+                    document.getElementById('login-password').value = '';
+                    document.getElementById('login-confirm-password').value = '';
+                } catch (error) {
+                    console.error('Signup error:', error);
+                    let errorMessage = 'Signup failed. ';
+                    if (error.code === 'auth/email-already-in-use') {
+                        errorMessage += 'Email already in use.';
+                    } else if (error.code === 'auth/weak-password') {
+                        errorMessage += 'Password is too weak.';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage += 'Invalid email address.';
+                    } else {
+                        errorMessage += 'Please try again.';
+                    }
+                    alert(errorMessage);
+                }
+            } else {
+                try {
+                    const userCredential = await window.signInWithEmailAndPassword(window.auth, email, password);
+                    console.log('Logged in:', userCredential.user);
+                    document.getElementById('login-dialog').style.display = 'none';
+                    // Clear form
+                    document.getElementById('login-email').value = '';
+                    document.getElementById('login-password').value = '';
+                } catch (error) {
+                    console.error('Login error:', error);
+                    let errorMessage = 'Login failed. ';
+                    if (error.code === 'auth/user-not-found') {
+                        errorMessage += 'No account found with this email.';
+                    } else if (error.code === 'auth/wrong-password') {
+                        errorMessage += 'Incorrect password.';
+                    } else if (error.code === 'auth/invalid-email') {
+                        errorMessage += 'Invalid email address.';
+                    } else {
+                        errorMessage += 'Please check your credentials.';
+                    }
+                    alert(errorMessage);
+                }
+            }
+        });
+
+        // Cancel button handler
+        document.getElementById('cancel-login').addEventListener('click', () => {
+            document.getElementById('login-dialog').style.display = 'none';
+            // Clear form
+            document.getElementById('login-email').value = '';
+            document.getElementById('login-password').value = '';
+            document.getElementById('login-confirm-password').value = '';
+            // Reset to login mode
+            isSignupMode = false;
+            document.getElementById('dialog-title').textContent = 'Login to Axiom';
+            document.getElementById('login-button').textContent = 'Login';
+            document.getElementById('switch-to-signup').textContent = 'Create Account';
+            document.getElementById('confirm-password-container').style.display = 'none';
+        });
     </script>
 </body>
 
+<script>
+(function() {
+    const originalSetAttribute = Element.prototype.setAttribute;
+    Element.prototype.setAttribute = function(name, value) {
+        if (name === 'src' && this.tagName === 'IFRAME' && value && (value.startsWith('http://') || value.startsWith('https://'))) {
+            // Proxy the URL
+            value = '../prxy.html?url=' + btoa(value);
+        }
+        return originalSetAttribute.call(this, name, value);
+    };
+    const iframe = document.getElementById('iframe');
+    if (iframe) {
+        let originalSrc = iframe.src;
+        Object.defineProperty(iframe, 'src', {
+            get: function() { return originalSrc; },
+            set: function(value) {
+                if (value && (value.startsWith('http://') || value.startsWith('https://'))) {
+                    originalSrc = '../prxy.html?url=' + btoa(value);
+                } else {
+                    originalSrc = value;
+                }
+                originalSetAttribute.call(this, 'src', originalSrc);
+            }
+        });
+    }
+
+    const urlInput = document.getElementById('url-input');
+    if (urlInput) {
+        urlInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                const url = this.value;
+                if (url && (url.startsWith('http://') || url.startsWith('https://') || !url.includes('.'))) {
+                    e.preventDefault();
+                    iframe.src = '../prxy.html?url=' + btoa(url);
+                }
+            }
+        });
+    }
+})();
+</script>
+</html>
 </html>

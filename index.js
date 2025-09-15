@@ -13,12 +13,11 @@ const { baremuxPath } = require("@mercuryworkshop/bare-mux/node");
 const { BlockList } = require("node:net");
 
 
-
 logging.set_level(logging.NONE);
 Object.assign(wisp.options, {
   allow_udp_streams: false,
   // hostname_blacklist: [/example\.com/],
-  dns_servers: ["1.1.1.3", "1.0.0.3"]
+  dns_servers: ["94.140.14.14"],
 });
 
 const fastify = Fastify({
@@ -86,7 +85,6 @@ fastify.get("/api/youtube/search", async (request, reply) => {
         const html = await response.text();
         const $ = cheerio.load(html);
 
-        // Parse videos using the provided HTML structure
         const videos = $('.pure-u-1.pure-u-md-1-4').map((index, element) => {
             const $video = $(element);
             const $thumbnailLink = $video.find('.thumbnail a');
@@ -156,6 +154,42 @@ fastify.get("/api/youtube/search", async (request, reply) => {
     }
 })
 
+fastify.post("/api/premium/check", async (request, reply) => {
+
+    let active_keys = process.env.ACTIVE_KEYS.split(',');
+    let key = request.body.axiomPremiumKey;
+    if (active_keys.includes(key)) {
+        reply.send({ success: true });
+    } else {
+        reply.send({ success: false });
+    }
+})
+
+const apiKey = '1070730380f5fee0d87cf0382670b255'; 
+
+fastify.get("/api/movies/search", async (request, reply) => {
+    const query = request.query.query || '';
+
+    if (!query.trim()) {
+        return reply.code(400).send({ error: 'Query parameter is required' });
+    }
+    const movieResponse = await fetch(`https://api.themoviedb.org/3/search/movie?api_key=${apiKey}&query=${query}`);
+    const tvResponse = await fetch(`https://api.themoviedb.org/3/search/tv?api_key=${apiKey}&query=${query}`);
+    const animeResponse = await fetch(`https://api.themoviedb.org/3/search/collection?api_key=${apiKey}&query=${query}`); 
+
+    let movieData = await movieResponse.json();
+    let tvData = await tvResponse.json();
+    let animeData = await animeResponse.json();
+
+    // add media_type to each result
+    movieData.results.forEach(result => result.media_type = 'Movie');
+    tvData.results.forEach(result => result.media_type = 'TV Show');
+    animeData.results.forEach(result => result.media_type = 'Anime');
+
+    // merge and send the results
+    const results = [...movieData.results, ...tvData.results, ...animeData.results];
+    reply.send({ results });
+})
 
 const endpoint = "https://api.groq.com/openai/v1/chat/completions";
 const api_key = "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"; // no, this isn't my api key, so don't call me a dumbass for putting it here

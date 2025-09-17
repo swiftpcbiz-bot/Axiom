@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proxy</title>
+    <title>Axiom</title>
     <style>
         iframe {
             width: 100vw;
@@ -15,8 +15,8 @@
             left: 0;
         }
     </style>
-    <script src="ox/ox.bundle.js" defer></script>
-    <script src="ox/ox.config.js" defer></script>
+    <script src="uv/uv.bundle.js" defer></script>
+    <script src="uv/uv.bundle.js" defer></script>
     <script src="/scram/scramjet.all.js"></script>
     <script src="/baremux/index.js" defer></script>
     <script src="/epoxy/index.js" defer></script>
@@ -90,7 +90,7 @@
             let wispUrl = "wss://anura.pro";
             await connection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
 
-            frame.src = __ox$config.prefix + __ox$config.encodeUrl(url);
+            frame.src = __uv$config.prefix + __uv$config.encodeUrl(url);
         }
 
         async function loadScram() {

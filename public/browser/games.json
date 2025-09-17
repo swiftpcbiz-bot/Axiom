@@ -351,6 +351,12 @@
     "categories": ["all"]
   },
   {
+    "name": "Ultrakill",
+    "link": "https://waves.lat/assets/gs/ultrakill/",
+    "image": "/assets/media/icons/ultrakill.jpg",
+    "categories": ["all"]
+  },
+  {
     "name": "Taisei Project",
     "link": "https://play.taisei-project.org/",
     "image": "/assets/media/icons//taisei.jpg",

@@ -479,19 +479,16 @@
         }
 
         function loadSettings() {
-            // Load auto theme setting
             const autoTheme = localStorage.getItem('axiomThemeAuto') === 'true';
             document.getElementById('auto-theme-toggle').checked = autoTheme;
 
-            // Load search engine
+        
             const searchEngine = localStorage.getItem('axiomSearchEngine') || 'https://search.brave.com/search?q=';
             document.getElementById('search-engine-select').value = searchEngine;
 
-            // Load proxy
             const proxy = localStorage.getItem('axiomProxy') || 'scramjet';
             document.getElementById('proxy-select').value = proxy;
 
-            // Load homepage
             const homepage = localStorage.getItem('axiomHomepage') || 'start';
             document.getElementById('homepage-select').value = homepage;
 
@@ -501,17 +498,14 @@
                 document.getElementById('custom-homepage-item').style.display = 'block';
             }
 
-            // Load developer mode
             const devMode = localStorage.getItem('axiomDeveloperMode') === 'true';
             document.getElementById('developer-mode-toggle').checked = devMode;
 
-            // Load block popups
             const blockPopups = localStorage.getItem('axiomBlockPopups') === 'true';
             document.getElementById('block-popups-toggle').checked = blockPopups;
         }
 
         function setupEventListeners() {
-            // Auto theme toggle
             document.getElementById('auto-theme-toggle').addEventListener('change', function(e) {
                 localStorage.setItem('axiomThemeAuto', e.target.checked);
                 if (e.target.checked && window.themeManager) {
@@ -519,19 +513,16 @@
                 }
             });
 
-            // Search engine select
             document.getElementById('search-engine-select').addEventListener('change', function(e) {
                 localStorage.setItem('axiomSearchEngine', e.target.value);
             });
 
-            // Proxy select
             document.getElementById('proxy-select').addEventListener('change', function(e) {
                 if (window.axiomPluginAPI) {
                     window.axiomPluginAPI.setProxy(e.target.value);
                 }
             });
 
-            // Homepage select
             document.getElementById('homepage-select').addEventListener('change', function(e) {
                 const value = e.target.value;
                 if (window.axiomPluginAPI) {
@@ -544,30 +535,23 @@
                 }
             });
 
-            // Custom homepage input
             document.getElementById('custom-homepage-input').addEventListener('input', function(e) {
                 if (window.axiomPluginAPI) {
                     window.axiomPluginAPI.setHomepage('custom', e.target.value);
                 }
             });
 
-            // Developer mode toggle
             document.getElementById('developer-mode-toggle').addEventListener('change', function(e) {
                 localStorage.setItem('axiomDeveloperMode', e.target.checked);
             });
 
-            // Block popups toggle
             document.getElementById('block-popups-toggle').addEventListener('change', function(e) {
                 localStorage.setItem('axiomBlockPopups', e.target.checked);
             });
         }
 
         function clearBrowsingData() {
-            // Clear tabs, history, and other stored data
-            localStorage.removeItem('axiomTabs');
-            localStorage.removeItem('axiomHistory');
-            // Note: Cookies are handled by resetSettings
-            alert('Browsing data cleared successfully.');
+            localStorage.clear()
         }
 
         function resetSettings() {

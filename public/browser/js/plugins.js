@@ -109,4 +109,15 @@ class AxiomPluginManager {
     window.axiomPluginAPI = new AxiomPluginManager();
     console.log(`Axiom API v${version}`);
 
+    // load plugins
+    plugins = localStorage.getItem("axiomPlugins")
+
+    plugins = plugins ? JSON.parse(plugins) : [];
+
+    plugins.forEach((plugin) => {
+        fetch("/api/plugin/" + plugin.src).then((response) => response.text()).then((data) => {
+            eval(data);
+        })
+    })
+
 }

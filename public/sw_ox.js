@@ -1,26 +1,24 @@
-//gay
-importScripts("ox/ox.bundle.js");
-importScripts("ox/ox.config.js");
-importScripts("ox/ox.cache.js");
-importScripts("ox/ox.sw.js");
+/*global UVServiceWorker,__uv$config*/
+/*
+ * Stock service worker script.
+ * Users can provide their own sw.js if they need to extend the functionality of the service worker.
+ * Ideally, this will be registered under the scope in uv.config.js so it will not need to be modified.
+ * However, if a user changes the location of uv.bundle.js/uv.config.js or sw.js is not relative to them, they will need to modify this script locally.
+ */
+importScripts("uv.bundle.js");
+importScripts("uv.config.js");
+importScripts(__uv$config.sw || "uv.sw.js");
 
-const ox = new OXServiceWorker();
-
-// Initialize cache if enabled
-if (ox.cache) {
-	console.log("OX Cache enabled with configuration:", ox.config.cache);
-}
+const uv = new UVServiceWorker();
 
 async function handleRequest(event) {
-	if (ox.route(event)) {
-		return await ox.fetch(event);
+	if (uv.route(event)) {
+		return await uv.fetch(event);
 	}
 
 	return await fetch(event.request);
 }
 
 self.addEventListener("fetch", (event) => {
-	// check if we need to reject
-	if (__ox$config.blockedSites.includes(event.request.url.split("/")[3])) return event.respondWith(new Response(null, { status: 403 }));
 	event.respondWith(handleRequest(event));
 });

@@ -1,3 +1,4 @@
+//    "@mercuryworkshop/scramjet": "https://github.com/MercuryWorkshop/scramjet/releases/download/latest/mercuryworkshop-scramjet-2.0.0-alpha.tgz",
 const { createServer } = require("node:http");
 const { fileURLToPath } = require("url");
 const { join } = require('path');
@@ -7,7 +8,7 @@ const Fastify = require("fastify");
 const fastifyStatic = require("@fastify/static");
 const cheerio = require("cheerio");
 
-const { scramjetPath } = require("@mercuryworkshop/scramjet/path");
+// const { scramjetPath } = require("@mercuryworkshop/scramjet/path");
 const { epoxyPath } = require("@mercuryworkshop/epoxy-transport");
 const { baremuxPath } = require("@mercuryworkshop/bare-mux/node");
 const { BlockList } = require("node:net");
@@ -39,11 +40,11 @@ fastify.register(fastifyStatic, {
 	decorateReply: true,
 });
 
-fastify.register(fastifyStatic, {
-  root: scramjetPath,
-  prefix: "/scram/",
-  decorateReply: false,
-});
+//fastify.register(fastifyStatic, {
+//  root: scramjetPath,
+//  prefix: "/scram/",
+//  decorateReply: false,
+//});
 
 fastify.register(fastifyStatic, {
 	root: epoxyPath,

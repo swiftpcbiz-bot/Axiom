@@ -1485,5 +1485,4 @@ window.themeManager = new ThemeManager();
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = ThemeManager;
 }
-// Instantiate and expose ThemeManager globally
 window.themeManager = new ThemeManager();

@@ -11,6 +11,7 @@ const { scramjetPath } = require("@mercuryworkshop/scramjet/path");
 const { epoxyPath } = require("@mercuryworkshop/epoxy-transport");
 const { baremuxPath } = require("@mercuryworkshop/bare-mux/node");
 const { BlockList } = require("node:net");
+const { Console } = require("node:console");
 
 
 logging.set_level(logging.NONE);
@@ -55,6 +56,36 @@ fastify.register(fastifyStatic, {
 	prefix: "/baremux/",
 	decorateReply: false,
 });
+
+let plugins = [];
+let plugin_code = {};
+
+console.log("Fetching plugins from github...");
+fetch("https://raw.githubusercontent.com/Axiom-Proxy/Axiom-Plugins-Directory/refs/heads/main/plugins.json").then((response) => response.json()).then((data) => {
+    console.log("Fetched plugins from github!");
+    plugins = data;
+    plugin_code = {};
+
+    plugins.forEach(plugin => {
+        //https://raw.githubusercontent.com/Axiom-Proxy/Axiom-Plugins-Directory/refs/heads/main/
+
+        // debug
+
+        fetch(`https://raw.githubusercontent.com/Axiom-Proxy/Axiom-Plugins-Directory/refs/heads/main/${plugin.src}`).then((response) => response.text()).then((data) => {
+            plugin_code[plugin.name] = data;
+        })
+    });
+})
+
+fastify.get("/api/plugins", (request, reply) => {
+    reply.send(plugins);
+})
+
+fastify.get("/api/plugin/", (request, reply) => {
+    // get body "src"
+    let src = request.body.src;
+    reply.send(plugin_code[src]);
+})
 
 fastify.get("/ran", (request, reply) => {
     fetch("https://random-image-pepebigotes.vercel.app/api/random-image").then((response) => response).then((data) => {

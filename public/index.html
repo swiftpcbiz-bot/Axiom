@@ -22,6 +22,12 @@
             window.location = sites[Math.floor(Math.random() * sites.length)];
         }
     })
+
+    isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.  userAgent); // !WATCHOUT!
+
+    if (isMobile){
+        window.location = "mobile/mobile.html";
+    }
 </script>    
 </body>
 </html>

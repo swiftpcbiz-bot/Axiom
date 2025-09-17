@@ -10,13 +10,13 @@
             width: 100vw;
             height: 100vh;
             border: none;
-            position: absolute;
+            position: absolute; 
             top: 0;
             left: 0;
         }
-    </style>
-    <script src="uv/uv.bundle.js" defer></script>
-    <script src="uv/uv.bundle.js" defer></script>
+    </style> 
+    <script src="/uv/uv.bundle.js" defer></script>
+    <script src="/uv/uv.config.js" defer></script>
     <script src="/scram/scramjet.all.js"></script>
     <script src="/baremux/index.js" defer></script>
     <script src="/epoxy/index.js" defer></script>
@@ -27,12 +27,13 @@
 
     <script>
         window.addEventListener('load', async () => {
-            if (localStorage.getItem('axiomProxy') == 'scramjet' || localStorage.getItem('axiomProxy') == null) {
-                await loadScram();
-            }
-        else if (localStorage.getItem('axiomProxy') == 'oxygen') {
+        // scramjets hella unstable so we'll keep using uv for now
+            //    if (localStorage.getItem('axiomProxy') == 'scramjet' || localStorage.getItem('axiomProxy') == null) {
+        //        await loadScram();
+        //    }
+        //else if (localStorage.getItem('axiomProxy') == 'oxygen') {
                 await loadOxygen();
-           }
+        //   }
         })
 
         function search(input, searchEngine = "") {

@@ -8,7 +8,7 @@ const Fastify = require("fastify");
 const fastifyStatic = require("@fastify/static");
 const cheerio = require("cheerio");
 
-// const { scramjetPath } = require("@mercuryworkshop/scramjet/path");
+const { scramjetPath } = require("@mercuryworkshop/scramjet/path");
 const { epoxyPath } = require("@mercuryworkshop/epoxy-transport");
 const { baremuxPath } = require("@mercuryworkshop/bare-mux/node");
 const { BlockList } = require("node:net");

@@ -40,11 +40,11 @@ fastify.register(fastifyStatic, {
 	decorateReply: true,
 });
 
-//fastify.register(fastifyStatic, {
-//  root: scramjetPath,
-//  prefix: "/scram/",
-//  decorateReply: false,
-//});
+fastify.register(fastifyStatic, {
+  root: scramjetPath,
+  prefix: "/scram/",
+  decorateReply: false,
+});
 
 fastify.register(fastifyStatic, {
 	root: epoxyPath,

@@ -26,14 +26,11 @@
     <iframe id="frame" src="browser/load.html"></iframe>
 
     <script>
+        let currentProxy = 'scramjet';
+        let fallbackAttempted = false;
+
         window.addEventListener('load', async () => {
-        // scramjets hella unstable so we'll keep using uv for now
-            //    if (localStorage.getItem('axiomProxy') == 'scramjet' || localStorage.getItem('axiomProxy') == null) {
-        //        await loadScram();
-        //    }
-        //else if (localStorage.getItem('axiomProxy') == 'oxygen') {
-                await loadOxygen();
-        //   }
+            await loadScram();
         })
 
         function search(input, searchEngine = "") {
@@ -53,23 +50,39 @@
         }
 
         setInterval(() => {
-            let title = document.getElementById("frame").contentDocument.title;
-            if (title !== document.title) {
-                document.title = title;
+            try {
+                let title = document.getElementById("frame").contentDocument.title;
+                if (title !== document.title) {
+                    document.title = title;
+                }
+
+                // Check for ScramJet errors and fallback to UV/OX
+                if (currentProxy === 'scramjet' && !fallbackAttempted &&
+                    title.includes("ScramJet") && title.includes("Error")) {
+                    console.log("ScramJet error detected, falling back to UV/OX");
+                    fallbackAttempted = true;
+                    currentProxy = 'uv';
+                    loadOxygen();
+                    return;
+                }
+
+                // get content
+                let content = document.getElementById("frame").contentDocument.body.innerHTML;
+                // remove html tags
+                content = content.replace(/<[^>]+>/g, '');
+                content = content.replace(/&nbsp;/g, ' ');
+                // remove tabs
+                content = content.replace(/\t/g, ' ');
+                content = content.replace(/\n/g, ' ');
+                // remove one word lines
+                content = content.replace(/\n\s*\n/g, '\n');
+                // remove leading and trailing spaces
+                content = content.trim();
+                localStorage.setItem("content", content);
+            } catch (err) {
+                // Handle cases where iframe content is not accessible
+                console.log("Cannot access iframe content:", err.message);
             }
-            // get content
-            let content = document.getElementById("frame").contentDocument.body.innerHTML;
-            // remove html tags
-            content = content.replace(/<[^>]+>/g, '');
-            content = content.replace(/&nbsp;/g, ' ');
-            // remove tabs
-            content = content.replace(/\t/g, ' ');
-            content = content.replace(/\n/g, ' ');
-            // remove one word lines
-            content = content.replace(/\n\s*\n/g, '\n');
-            // remove leading and trailing spaces
-            content = content.trim();
-            localStorage.setItem("content", content);
 
         }, 100);
 

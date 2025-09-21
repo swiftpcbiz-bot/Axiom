@@ -1,113 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Axiom</title>
+    <title>Proxy</title>
     <style>
         iframe {
             width: 100vw;
             height: 100vh;
             border: none;
-            position: absolute; 
+            position: absolute;
             top: 0;
             left: 0;
         }
-    </style> 
-    <script src="/uv/uv.bundle.js" defer></script>
-    <script src="/uv/uv.config.js" defer></script>
+    </style>
     <script src="/scram/scramjet.all.js"></script>
     <script src="/baremux/index.js" defer></script>
     <script src="/epoxy/index.js" defer></script>
 </head>
-
 <body>
     <iframe id="frame" src="browser/load.html"></iframe>
-
+    
     <script>
-        let currentProxy = 'scramjet';
-        let fallbackAttempted = false;
-
         window.addEventListener('load', async () => {
-            await loadScram();
-        })
-
-        function search(input, searchEngine = "") {
-            if (searchEngine == "") searchEngine = localStorage.getItem("search") || "https://search.brave.com/search?q=";
-            try {
-                new URL(input);
-                return input;
-            } catch {
-                return searchEngine + encodeURIComponent(input);
-            }
-        }
-
-        function getUrl() {
-            const params = new URLSearchParams(window.location.search);
-            const encoded = params.get("url");
-            return encoded ? atob(encoded) : "https://www.guthib.com"; // yea
-        }
-
-        setInterval(() => {
-            try {
-                let title = document.getElementById("frame").contentDocument.title;
-                if (title !== document.title) {
-                    document.title = title;
-                }
-
-                // Check for ScramJet errors and fallback to UV/OX
-                if (currentProxy === 'scramjet' && !fallbackAttempted &&
-                    title.includes("ScramJet")) {
-                    console.log("ScramJet error detected, falling back to UV/OX");
-                    fallbackAttempted = true;
-                    currentProxy = 'uv';
-                    loadOxygen();
-                    return;
-                }
-
-                // get content
-                let content = document.getElementById("frame").contentDocument.body.innerHTML;
-                // remove html tags
-                content = content.replace(/<[^>]+>/g, '');
-                content = content.replace(/&nbsp;/g, ' ');
-                // remove tabs
-                content = content.replace(/\t/g, ' ');
-                content = content.replace(/\n/g, ' ');
-                // remove one word lines
-                content = content.replace(/\n\s*\n/g, '\n');
-                // remove leading and trailing spaces
-                content = content.trim();
-                localStorage.setItem("content", content);
-            } catch (err) {
-                // Handle cases where iframe content is not accessible
-                console.log("Cannot access iframe content:", err.message);
-            }
-
-        }, 100);
-
-
-        async function loadOxygen() {
-            // uv-based
-            // register sw
-
-            const connection = new BareMux.BareMuxConnection("/baremux/worker.js");
-
-            if ("serviceWorker" in navigator) {
-                await navigator.serviceWorker.register("sw_ox.js");
-            }
-
-            const url = search(getUrl());
-
-            let frame = document.getElementById("frame");
-
-            let wispUrl = "wss://anura.pro";
-            await connection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
-
-            frame.src = __uv$config.prefix + __uv$config.encodeUrl(url);
-        }
-
-        async function loadScram() {
             const { ScramjetController } = $scramjetLoadController();
 
             const scramjet = new ScramjetController({
@@ -131,17 +46,53 @@
                 throw err;
             }
 
+            function search(input, searchEngine = "") {
+                if (searchEngine == "") searchEngine = localStorage.getItem("search") || "https://search.brave.com/search?q=";
+                try {
+                    new URL(input);
+                    return input;
+                } catch {
+                    return searchEngine + encodeURIComponent(input);
+                }
+            }
+
+            function getUrl() {
+                const params = new URLSearchParams(window.location.search);
+                const encoded = params.get("url");
+                return encoded ? atob(encoded) : "https://www.guthib.com"; // yea
+            }
+
+            setInterval(() => {
+                let title = document.getElementById("frame").contentDocument.title;
+                if (title !== document.title) {
+                    document.title = title;
+                }
+                // get content
+                let content = document.getElementById("frame").contentDocument.body.innerHTML;
+                // remove html tags
+                content = content.replace(/<[^>]+>/g, '');
+                content = content.replace(/&nbsp;/g, ' ');
+                // remove tabs
+                content = content.replace("/t", ' ');
+                content = content.replace(/\n/g, ' ');
+                // remove one word lines
+                content = content.replace(/\n\s*\n/g, '\n');
+                // remove leading and trailing spaces
+                content = content.trim();
+                localStorage.setItem("content", content);
+
+            }, 100);
+
             const url = search(getUrl());
 
             let frame = document.getElementById("frame");
             let wispUrl = "wss://anura.pro"
-
+            
             await connection.setTransport("/epoxy/index.mjs", [{ wisp: wispUrl }]);
-
+            
             frame.src = scramjet.encodeUrl(url);
             console.log("Proxy initialized with URL:", url);
-        };
+        });
     </script>
 </body>
-
 </html>

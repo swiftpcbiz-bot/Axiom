@@ -35,6 +35,12 @@
     "image": "/assets/media/icons/instagram.jpg",
     "categories": ["all"]
   },
+    {
+    "name": "KiwiAI (RP)",
+    "link": "https://kiwialpha.seabase.xyz",
+    "image": "/assets/media/icons/kiwi.png",
+    "categories": ["all"]
+  },
   {
     "name": "Instagram... REELS",
     "link": "https://www.instagram.com/reels/",

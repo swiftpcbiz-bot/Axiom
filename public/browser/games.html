@@ -332,6 +332,17 @@
 
     <div id="cards"></div>
     <script>
+        // Premium check function
+        function isPremium() {
+            try {
+                const premium = localStorage.getItem('axiomPremium');
+                return premium === 'true';
+            } catch (e) {
+                console.warn('Could not check premium status:', e);
+                return false;
+            }
+        }
+
         // Pinning functionality
         function getPinnedApps() {
             const pinned = localStorage.getItem('pinnedApps');
@@ -370,13 +381,22 @@
             link = "./apps.json";
             document.getElementById("apps").classList.add("active");
         }
-        else if (style == "shows"){
+        else if (style == "shows" && isPremium()){
             link = "./shows.json";
             document.getElementById("shows").classList.add("active");
+        }
+        else if (style == "shows" && !isPremium()){
+            alert("Shows are a premium feature. Please upgrade to access.");
+            window.location = "./games.html?style=games";
         }
         else {
             link = "./games.json";
             document.getElementById("games").classList.add("active");
+        }
+
+        // Hide shows button if not premium
+        if (!isPremium()) {
+            document.getElementById("shows").style.display = "none";
         }
 
         function createCard(game) {
@@ -419,8 +439,13 @@
         function renderCards() {
             const pinnedApps = getPinnedApps();
 
+            // Filter data based on premium status
+            const filteredData = currentData.filter(game => {
+                return !game.premium || isPremium();
+            });
+
             // Sort data: pinned apps first, then unpinned apps
-            const sortedData = currentData.sort((a, b) => {
+            const sortedData = filteredData.sort((a, b) => {
                 const aPinned = pinnedApps.includes(a.name);
                 const bPinned = pinnedApps.includes(b.name);
                 if (aPinned && !bPinned) return -1;

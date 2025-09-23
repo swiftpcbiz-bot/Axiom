@@ -186,6 +186,18 @@
     "categories": ["all", "2P"]
   },
   {
+    "name": "Roblox",
+    "link": "https://easyfun.gg/embed/roblox.html",
+    "image": "/assets/media/icons/roblox.webp",
+    "categories": ["all", "2P"]
+  },
+  {
+    "name": "Clash Of Clans",
+    "link": "https://easyfun.gg/embed/clash-of-clans.html",
+    "image": "/assets/media/icons/clash.jpg",
+    "categories": ["all", "2P"]
+  },
+  {
     "name": "bloxd.io",
     "link": "https://bloxd.io",
     "image": "/assets/media/icons/bloxd-io.webp",

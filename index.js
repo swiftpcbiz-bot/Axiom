@@ -16,9 +16,12 @@ const { Console } = require("node:console");
 
 
 logging.set_level(logging.NONE);
+
+
+
 Object.assign(wisp.options, {
   allow_udp_streams: false,
-  // hostname_blacklist: [/example\.com/],
+   hostname_blacklist: [/example\.com/],
   dns_servers: ["94.140.14.14"],
 });
 

@@ -144,17 +144,26 @@
 
         // check for pipipi theme
         if (localStorage.getItem('axiomTheme') === 'pipipipi') {
-
+            window.title = "sanity"
             const pipi = document.getElementById('pipi');
             const pipi_img = document.createElement('img');
             pipi_img.src = "./assets/pippa.gif";
             pipi.appendChild(pipi_img);
         }
         if (localStorage.getItem('axiomTheme') === 'fishstick') {
-
+            window.title = "hog.crank"
             const pipi = document.getElementById('pipi');
             const pipi_img = document.createElement('img');
             pipi_img.src = "./assets/mari.gif";
+            pipi.appendChild(pipi_img);
+        }
+        if (localStorage.getItem('axiomTheme') === 'lumi') {
+
+            window.title = "shadow wizard lumi gang"
+
+            const pipi = document.getElementById('pipi');
+            const pipi_img = document.createElement('img');
+            pipi_img.src = "./assets/lumi.gif";
             pipi.appendChild(pipi_img);
         }
 

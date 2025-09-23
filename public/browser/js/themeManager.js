@@ -359,6 +359,30 @@ class ThemeManager {
                     ytSurface: 'rgba(255, 255, 255, 0.2)',
                     ytHover: 'rgba(255, 255, 255, 0.3)'
                 }
+            },
+                        lumi: {
+                /* light */
+                name: 'klumi 1.5',
+                colors: {
+                    primary: '#ffffff',
+                    secondary: '#f7f7f7',
+                    tertiary: '#dedede',
+                    accent: '#ffffff',
+                    surface: '#ffffff',
+                    surfaceLight: '#f7f7f7',
+                    surfaceDark: '#dedede',
+                    textPrimary: '#000000',
+                    textSecondary: '#999999',
+                    textTertiary: '#666666',
+                    textMuted: '#999999',
+                    hover: '#dedede',
+                    active: '#cccccc',
+                    focus: 'rgba(0, 0, 0, 0.1)',
+                    error: '#ff0000',
+                    success: '#00ff00',
+                    warning: '#ffff00',
+                    overlay: 'rgba(255, 255, 255, 0.05)'
+                }
             }
         };
         

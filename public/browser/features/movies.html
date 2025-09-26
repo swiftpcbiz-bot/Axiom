@@ -400,7 +400,7 @@
             document.getElementById("overhead").style.display = "flex";
             document.getElementById("player").style.display = "block";
             document.getElementById("player-loading").style.display = "flex";
-            document.getElementById("player").src = atob(m);
+            document.getElementById("player").src = "../../prxy.html?url=" + (m);
             document.getElementById("movie-name").textContent = title || "Unknown";
 
             document.getElementById("player").onload = function() {

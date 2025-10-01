@@ -7,8 +7,6 @@ const { server: wisp, logging } = require("@mercuryworkshop/wisp-js/server");
 const Fastify = require("fastify");
 const fastifyStatic = require("@fastify/static");
 const cheerio = require("cheerio");
-
-const { scramjetPath } = require("@mercuryworkshop/scramjet/path");
 const { epoxyPath } = require("@mercuryworkshop/epoxy-transport");
 const { baremuxPath } = require("@mercuryworkshop/bare-mux/node");
 const { BlockList } = require("node:net");
@@ -41,12 +39,6 @@ const fastify = Fastify({
 fastify.register(fastifyStatic, {
     root: join(__dirname, 'public'),
 	decorateReply: true,
-});
-
-fastify.register(fastifyStatic, {
-  root: scramjetPath,
-  prefix: "/scram/",
-  decorateReply: false,
 });
 
 fastify.register(fastifyStatic, {

@@ -1,5 +1,6 @@
 //    "@mercuryworkshop/scramjet": "https://github.com/MercuryWorkshop/scramjet/releases/download/latest/mercuryworkshop-scramjet-2.0.0-alpha.tgz",
 const { createServer } = require("node:http");
+const { scramjetPath } = require("@mercuryworkshop/scramjet/path");
 const { fileURLToPath } = require("url");
 const { join } = require('path');
 const { hostname } = require("node:os");

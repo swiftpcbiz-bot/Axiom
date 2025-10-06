@@ -1537,7 +1537,7 @@
                 
                 if (!x) return;
                 
-                if (x.includes("prxy.html") && x.includes("url=")) {
+                if (x.includes("prxy.html")  && x.includes("url=") || x.includes("prxy_sj.html") && x.includes("url=")) {
                     const urlPart = x.split("url=")[1];
                     if (urlPart) {
                         try {
@@ -1549,7 +1549,7 @@
                     }
                 }
                 
-                if (x.startsWith(window.location.origin) && !x.includes("prxy.html")) {
+                if (x.startsWith(window.location.origin) && !x.includes("prxy.html") || x.startsWith(window.location.origin) && !x.includes("prxy_sj.html")) {
                     const pathParts = x.split("/");
                     if (pathParts.length > 0) {
                         const lastPart = pathParts[pathParts.length - 1];

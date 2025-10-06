@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New Tab</title>
+    <title>Apps</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -371,11 +371,19 @@
             return getPinnedApps().includes(appName);
         }
 
+
+
         // get "style" from url params
         const urlParams = new URLSearchParams(window.location.search);
         const style = urlParams.get("style");
+        const search = urlParams.get("search");
         let link = "./games.json";
         let currentData = [];
+
+        if (search != null) {
+            // Store the search term to be applied after data is loaded
+            window.initialSearchTerm = search;
+        }
 
         if (style == "apps") {
             link = "./apps.json";
@@ -424,7 +432,7 @@
                     window.location = (btoa(game.link));
                 }
                 else{
-                    window.location = ('../prxy.html?url=' + btoa(game.link));
+                    window.location = ('../prxy_sj.html?url=' + btoa(game.link));
                 }
             };
 
@@ -462,18 +470,68 @@
                 document.getElementById("cards").appendChild(card);
             });
         }
+        function loadData() {
+            fetch(link)
+                .then((response) => response.json())
+                .then((data) => {
+                    currentData = data;
+                    renderCards();
+                    // Apply initial search if provided via URL
+                    if (window.initialSearchTerm) {
+                        setTimeout(() => {
+                            document.getElementById("search-input").value = window.initialSearchTerm;
+                            filterCards();
+                        }, 100);
+                    }
+                })
+                .catch((error) => {
+                    console.error("Error loading games:", error);
+                    document.getElementById("cards").innerHTML = "<p>Error loading games. Please try again later.</p>";
+                });
+        }
 
-        // cause one day you'll respect the good kid maad city
-        fetch(link)
-            .then((response) => response.json())
-            .then((data) => {
-                currentData = data;
-                renderCards();
-            })
-            .catch((error) => {
-                console.error("Error loading games:", error);
-                document.getElementById("cards").innerHTML = "<p>Error loading games. Please try again later.</p>";
+        function filterCards() {
+            const searchTerm = document.getElementById("search-input").value.toLowerCase();
+            const categoryValue = document.getElementById("category-select").value;
+            const cards = document.querySelectorAll(".card");
+
+            // If no cards exist yet, don't do anything (they'll be filtered when rendered)
+            if (cards.length === 0) {
+                return;
+            }
+
+            cards.forEach(card => {
+                const name = card.appName ? card.appName.toLowerCase() : "";
+                const categories = card.categories ? card.categories.toLowerCase() : "";
+
+                const matchesSearch = !searchTerm || name.includes(searchTerm);
+                const matchesCategory = categoryValue === "all" || categories.includes(categoryValue);
+
+                card.style.display = (matchesSearch && matchesCategory) ? "block" : "none";
             });
+        }
+
+        document.getElementById("search-input").addEventListener("input", filterCards);
+        document.getElementById("category-select").addEventListener("change", filterCards);
+        // cause one day you'll respect the good kid maad city
+        function render(type) {
+            document.getElementById("games").classList.remove("active");
+            document.getElementById("apps").classList.remove("active");
+            document.getElementById("shows").classList.remove("active");
+            document.getElementById(type).classList.add("active");
+            if (type === "apps") {
+                link = "./apps.json";
+            } else if (type === "shows" && isPremium()) {
+                link = "./shows.json";
+            } else if (type === "shows" && !isPremium()) {
+                alert("Shows are a premium feature. Please upgrade to access.");
+                return;
+            } else {
+                link = "./games.json";
+            }
+            loadData();
+        }
+        loadData();
 
         function filterCards() {
             const searchTerm = document.getElementById("search-input").value.toLowerCase();
@@ -488,6 +546,16 @@
                 const matchesCategory = selectedCategory === "all" || categories.includes(selectedCategory);
 
                 card.style.display = (matchesSearch && matchesCategory) ? "block" : "none";
+            });
+        }
+
+        function search_in(input){
+            const searchTerm = input
+            const cards = document.querySelectorAll(".card");
+            cards.forEach(card => {
+                const name = card.querySelector("h2").textContent.toLowerCase();
+                const matchesSearch = name.includes(searchTerm);
+                card.style.display = matchesSearch ? "block" : "none";
             });
         }
 

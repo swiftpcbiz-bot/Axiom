@@ -83,6 +83,12 @@ fastify.get("/api/plugin/", (request, reply) => {
     reply.send(plugin_code[src]);
 })
 
+fastify.register(fastifyStatic, {
+  root: scramjetPath,
+  prefix: "/scram/",
+  decorateReply: false,
+});
+
 fastify.get("/ran", (request, reply) => {
     fetch("https://random-image-pepebigotes.vercel.app/api/random-image").then((response) => response).then((data) => {
         reply.send(data);

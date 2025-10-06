@@ -180,6 +180,61 @@
             display: flex;
             align-items: center;
             font-weight: 600;
+            flex: 1;
+            justify-content: center;
+        }
+
+        #global-search {
+            position: relative;
+            width: 250px;
+            margin-right: 30px;
+        }
+
+        #global-search input {
+            width: 100%;
+            padding: 4px 8px;
+            border: 1px solid var(--theme-surfaceLight);
+            border-radius: 6px;
+            background: var(--theme-surface);
+            color: var(--theme-textPrimary);
+            font-size: 12px;
+            outline: none;
+        }
+
+        #global-search input:focus {
+            border-color: var(--theme-accent);
+        }
+
+        #search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: var(--theme-surface);
+            border: 1px solid var(--theme-surfaceLight);
+            border-radius: 6px;
+            max-height: 200px;
+            overflow-y: auto;
+            z-index: 10000;
+            display: none;
+        }
+
+        .search-result {
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-result:hover {
+            background: var(--theme-hover);
+        }
+
+        .search-result img {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
         }
 
         #top-bar-right {
@@ -213,6 +268,23 @@
             border-radius: 4px;
             cursor: pointer;
             transition: background-color 0.15s ease;
+        }
+
+        #theme-toggle {
+            display: flex;
+            align-items: center;
+            padding: 2px 4px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.15s ease;
+        }
+
+        #theme-toggle:hover {
+            background-color: var(--theme-overlay);
+        }
+
+        #theme-toggle .material-symbols-outlined {
+            font-size: 16px;
         }
 
         .status-icon:hover {
@@ -348,6 +420,52 @@
             background-color: var(--theme-errorHover);
         }
 
+        /* Context Menu Styles */
+        #context-menu {
+            position: fixed;
+            background: var(--theme-surface);
+            border: 1px solid var(--theme-surfaceLight);
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            padding: 8px 0;
+            min-width: 200px;
+            z-index: 10001;
+            display: none;
+            backdrop-filter: blur(20px);
+        }
+
+        .context-menu-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            cursor: pointer;
+            color: var(--theme-textPrimary);
+            font-size: 14px;
+            transition: background-color 0.15s ease;
+            user-select: none;
+        }
+
+        .context-menu-item:hover {
+            background: var(--theme-hover);
+        }
+
+        .context-menu-item.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .context-menu-item .material-symbols-outlined {
+            font-size: 18px;
+            width: 20px;
+        }
+
+        .context-menu-separator {
+            height: 1px;
+            background: var(--theme-surfaceLight);
+            margin: 4px 0;
+        }
+
     </style>
 </head>
 <body>
@@ -362,10 +480,12 @@
             <div class="menu-item" onclick="openApp('Oxygen VMs (Powered by V86)', '/features/vm.html')">Virtual Machine</div>
         </div>
         
-        <div id="top-bar-center">
-        </div>
         
         <div id="top-bar-right">
+                   <div id="global-search">
+                <input type="text" id="search-input" placeholder="Search apps and games..." />
+            </div>
+
             <div id="status-icons">
                 <div class="status-icon">
                     <span class="material-symbols-outlined">wifi</span>
@@ -376,38 +496,71 @@
                 </div>
                 <div id="time-display">12:00 PM</div>
             </div>
+            <div id="theme-toggle" onclick="cycleTheme()" title="Change Theme" role="button" tabindex="0" aria-label="Cycle Theme">
+                <span class="material-symbols-outlined">palette</span>
+            </div>
         </div>
     </div>
     <div id="desktop">
         <canvas id="particles-canvas"></canvas>
     </div>
+
+    <!-- Context Menu -->
+    <div id="context-menu">
+        <div class="context-menu-item" onclick="showAbout()">
+            <span class="material-symbols-outlined">info</span>
+            About Axiom
+        </div>
+        <div class="context-menu-item" onclick="openApp('Settings', '/browser/settings.html')">
+            <span class="material-symbols-outlined">settings</span>
+            Settings
+        </div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" onclick="refreshDesktop()">
+            <span class="material-symbols-outlined">refresh</span>
+            Refresh Desktop
+        </div>
+        <div class="context-menu-item" onclick="openApp('Terminal', '/features/terminal.html')">
+            <span class="material-symbols-outlined">terminal</span>
+            Open Terminal
+        </div>
+        <div class="context-menu-separator"></div>
+        <div class="context-menu-item" onclick="createDesktopShortcut()">
+            <span class="material-symbols-outlined">add</span>
+            Create Shortcut
+        </div>
+        <div class="context-menu-item" onclick="showDesktopProperties()">
+            <span class="material-symbols-outlined">folder</span>
+            Properties
+        </div>
+    </div>
             <center>
     <div id="toolbar">
-        <button onclick="openApp('Axiom', '/browser/browser.html')">
+        <button onclick="openApp('Axiom', '/browser/browser.html')" aria-label="Open Browser">
             <img src="os-assets/logo.png">
         </button>
-        <button onclick="openApp('Visual Studio Code', '/prxy.html?url='+btoa('https://vscode.dev/'))">
+        <button onclick="openApp('Visual Studio Code', '/prxy.html?url='+btoa('https://vscode.dev/'))" aria-label="Open Visual Studio Code">
             <img src="os-assets/vscode.png">
         </button>
-        <button onclick="openApp('Discord', '/prxy.html?url='+btoa('https://discord.com/login'))">
+        <button onclick="openApp('Discord', '/prxy.html?url='+btoa('https://discord.com/login'))" aria-label="Open Discord">
             <img src="os-assets/discord.jpg">
         </button>
-        <button onclick="openApp('YouTube', '/prxy.html?url='+btoa('https://youtube.com/'))">
+        <button onclick="openApp('YouTube', '/prxy.html?url='+btoa('https://youtube.com/'))" aria-label="Open YouTube">
             <img src="os-assets/youtube.webp">
         </button>
-        <button onclick="openApp('Twitch', '/prxy.html?url='+btoa('https://twitch.tv/'))">
+        <button onclick="openApp('Twitch', '/prxy.html?url='+btoa('https://twitch.tv/'))" aria-label="Open Twitch">
             <img src="os-assets/twitch.png">
         </button>
-        <button onclick="openApp('AI Chat', '/browser/features/ai.html')">
+        <button onclick="openApp('AI Chat', '/browser/features/ai.html')" aria-label="Open AI Chat">
             <img src="os-assets/openai.png">
         </button>
-        <button onclick="openApp('Terminal', '/features/terminal.html')">
+        <button onclick="openApp('Terminal', '/features/terminal.html')" aria-label="Open Terminal">
             <img src="os-assets/terminal.png">
         </button>
-        <button onclick="openApp('Oxygen VMs (Powered by V86)', '/features/vm.html')">
+        <button onclick="openApp('Oxygen VMs (Powered by V86)', '/features/vm.html')" aria-label="Open Virtual Machine">
             <img src="os-assets/vmbox.jpg">
         </button>
-        <button onclick="openApp('Background Music Player', '/browser/features/yt.html')">
+        <button onclick="openApp('Background Music Player', '/browser/features/yt.html')" aria-label="Open Background Music Player">
             <span class="material-symbols-outlined">music_note</span>
         </button>
 
@@ -478,10 +631,82 @@
                 ctx.globalAlpha = this.opacity;
                 ctx.fill();
                 ctx.globalAlpha = 1;
+                }
             }
-        }
-
-        function initParticles() {
+    
+            function cycleTheme() {
+                const themes = ['dark', 'midnight', 'forest', 'sunset', 'neon', 'pipipipi', 'fishstick', 'lumi'];
+                const currentTheme = localStorage.getItem('axiomTheme') || 'dark';
+                const currentIndex = themes.indexOf(currentTheme);
+                const nextIndex = (currentIndex + 1) % themes.length;
+                const nextTheme = themes[nextIndex];
+                if (window.themeManager) {
+                    window.themeManager.setTheme(nextTheme);
+                }
+            }
+    
+            const apps = [
+                { name: 'Axiom Browser', url: '/browser/browser.html', icon: 'os-assets/logo.png' },
+                { name: 'Games', url: '/browser/games.html', icon: '' },
+                { name: 'AI Chat', url: '/browser/features/ai.html', icon: 'os-assets/openai.png' },
+                { name: 'Settings', url: '/browser/settings.html', icon: '' },
+                { name: 'Virtual Machine', url: '/features/vm.html', icon: 'os-assets/vmbox.jpg' },
+                { name: 'Terminal', url: '/features/terminal.html', icon: 'os-assets/terminal.png' },
+                { name: 'YouTube', url: '/prxy.html?url='+btoa('https://youtube.com/'), icon: 'os-assets/youtube.webp' },
+                { name: 'Store', url: '/browser/games.html?style=apps', icon: '' },
+                { name: 'Visual Studio Code', url: '/prxy.html?url='+btoa('https://vscode.dev/'), icon: 'os-assets/vscode.png' },
+                { name: 'Discord', url: '/prxy.html?url='+btoa('https://discord.com/login'), icon: 'os-assets/discord.jpg' },
+                { name: 'Twitch', url: '/prxy.html?url='+btoa('https://twitch.tv/'), icon: 'os-assets/twitch.png' },
+            ];
+    
+            const searchInput = document.getElementById('search-input');
+            
+            document.getElementById("search-input").addEventListener("keypress", (e) => {
+                if (e.key === 'Enter') {
+                    const query = document.getElementById("search-input").value.trim();
+                    if (query) {
+                        openApp('Games', '/browser/games.html?search=' + encodeURIComponent(query));
+                    }
+                }
+            })
+    
+            document.addEventListener('click', function(e) {
+                if (!searchInput.contains(e.target) && !searchResults.contains(e.target)) {
+                    searchResults.style.display = 'none';
+                }
+            });
+    
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey || e.metaKey || e.altKey) return; // don't interfere with browser shortcuts
+                switch(e.key) {
+                    case '1':
+                        openApp('Axiom', '/browser/browser.html');
+                        break;
+                    case '2':
+                        openApp('Games', '/browser/games.html');
+                        break;
+                    case '3':
+                        openApp('AI Chat', '/browser/features/ai.html');
+                        break;
+                    case '4':
+                        openApp('Settings', '/browser/settings.html');
+                        break;
+                    case '5':
+                        openApp('Oxygen VMs (Powered by V86)', '/features/vm.html');
+                        break;
+                    case '6':
+                        openApp('Terminal', '/features/terminal.html');
+                        break;
+                    case '7':
+                        openApp('YouTube', '/prxy.html?url='+btoa('https://youtube.com/'));
+                        break;
+                    case '8':
+                        openApp('Store', '/browser/games.html?style=apps');
+                        break;
+                }
+            });
+    
+            function initParticles() {
             canvas = document.getElementById('particles-canvas');
             ctx = canvas.getContext('2d');
 

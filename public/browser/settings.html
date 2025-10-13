@@ -307,35 +307,6 @@
                 <span class="material-symbols-outlined">public</span>
                 Browser
             </h2>
-            
-            <div class="setting-item">
-                <div class="setting-info">
-                    <div class="setting-label">Default Search Engine</div>
-                    <div class="setting-description">Search engine used for queries in the address bar</div>
-                </div>
-                <div class="setting-control">
-                    <select class="dropdown-select" id="search-engine-select">
-                        <option value="https://search.brave.com/search?q=">Brave Search</option>
-                        <option value="https://www.google.com/search?q=">Google</option>
-                        <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
-                        <option value="https://www.bing.com/search?q=">Bing</option>
-                    </select>
-                </div>
-            </div>
-
-            
-             <div class="setting-item" style="display: none;">
-                 <div class="setting-info">
-                     <div class="setting-label">Proxy</div>
-                     <div class="setting-description">Pick the proxy to use</div>
-                 </div>
-                 <div class="setting-control">
-                     <select class="dropdown-select" id="proxy-select">
-                         <option value="scramjet" selected>ScramJet (Default)</option>
-                         <option value="oxygen">Oxygen (Ours)</option>
-                     </select>
-                 </div>
-             </div>
 
             <div class="setting-item">
                 <div class="setting-info">
@@ -351,7 +322,6 @@
                 </div>
             </div>
 
-
             <div class="setting-item" id="custom-homepage-item" style="display: none;">
                 <div class="setting-info">
                     <div class="setting-label">Custom Homepage URL</div>
@@ -359,6 +329,34 @@
                 </div>
                 <div class="setting-control">
                     <input type="url" class="input-field" id="custom-homepage-input" placeholder="https://example.com">
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Default Search Engine</div>
+                    <div class="setting-description">Search engine used for queries in the address bar</div>
+                </div>
+                <div class="setting-control">
+                    <select class="dropdown-select" id="search-engine-select">
+                        <option value="https://search.brave.com/search?q=">Brave Search</option>
+                        <option value="https://www.google.com/search?q=">Google</option>
+                        <option value="https://duckduckgo.com/?q=">DuckDuckGo</option>
+                        <option value="https://www.bing.com/search?q=">Bing</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Proxy</div>
+                    <div class="setting-description">Select the proxy backend to use for browsing</div>
+                </div>
+                <div class="setting-control">
+                    <select class="dropdown-select" id="proxy-select">
+                        <option value="ultraviolet">Ultraviolet</option>
+                        <option value="scramjet">Scramjet</option>
+                    </select>
                 </div>
             </div>
         </div>
@@ -369,16 +367,6 @@
                 <span class="material-symbols-outlined">security</span>
                 Privacy & Security
             </h2>
-            
-            <div class="setting-item">
-                <div class="setting-info">
-                    <div class="setting-label">Clear Browsing Data</div>
-                    <div class="setting-description">Remove tabs, history, and other stored data</div>
-                </div>
-                <div class="setting-control">
-                    <button class="button secondary" onclick="clearBrowsingData()">Clear Data</button>
-                </div>
-            </div>
 
             <div class="setting-item">
                 <div class="setting-info">
@@ -392,32 +380,25 @@
                     </label>
                 </div>
             </div>
-        <div class="settings-section">
-            <h2 class="section-title">
-                <span class="material-symbols-outlined">key</span>
-                Premium
-            </h2>
-            
+
             <div class="setting-item">
                 <div class="setting-info">
-                    <div class="setting-label">Premium Key</div>
-                    <div class="setting-description">Enter your premium key to unlock advanced features</div>
+                    <div class="setting-label">Clear Browsing Data</div>
+                    <div class="setting-description">Remove tabs, history, and other stored data</div>
                 </div>
                 <div class="setting-control">
-                    <input type="text" class="input-field" id="premium-key-input" placeholder="Enter premium key">
-                    <button class="button" onclick="addPremiumKey()">Add Key</button>
+                    <button class="button secondary" onclick="clearBrowsingData()">Clear Data</button>
                 </div>
             </div>
         </div>
 
-         
-
+        <!-- Advanced -->
         <div class="settings-section">
             <h2 class="section-title">
                 <span class="material-symbols-outlined">tune</span>
                 Advanced
             </h2>
-            
+
             <div class="setting-item">
                 <div class="setting-info">
                     <div class="setting-label">Developer Mode</div>
@@ -433,7 +414,7 @@
 
             <div class="setting-item">
                 <div class="setting-info">
-                    <div class="setting-label">Reset Settings</div>
+                    <div classproxy-select="setting-label">Reset Settings</div>
                     <div class="setting-description">Reset all settings to their default values</div>
                 </div>
                 <div class="setting-control">
@@ -442,8 +423,27 @@
             </div>
         </div>
 
+        <!-- Premium -->
+        <div class="settings-section">
+            <h2 class="section-title">
+                <span class="material-symbols-outlined">key</span>
+                Premium
+            </h2>
+
+            <div class="setting-item">
+                <div class="setting-info">
+                    <div class="setting-label">Premium Key</div>
+                    <div class="setting-description">Enter your premium key to unlock advanced features</div>
+                </div>
+                <div class="setting-control">
+                    <input type="text" class="input-field" id="premium-key-input" placeholder="Enter premium key">
+                    <button class="button" onclick="addPremiumKey()">Add Key</button>
+                </div>
+            </div>
+        </div>
+
         <div class="version-info">
-            Axiom Browser v2.5 - Built with ❤️ for privacy and speed
+            Axiom Browser v3 Alpha - Built with ❤️ for privacy and speed
         </div>
     </div>
 
@@ -585,7 +585,7 @@
             document.getElementById('homepage-select').value = savedHomepage;
 
             const savedProxy = localStorage.getItem('axiomProxy') || 'scramjet';
-            if (!['scramjet', 'oxygen'].includes(savedProxy)) {
+            if (!['scramjet', 'ultraviolet'].includes(savedProxy)) {
                 savedProxy = 'scramjet';
                 localStorage.setItem('axiomProxy', 'scramjet');
             }
